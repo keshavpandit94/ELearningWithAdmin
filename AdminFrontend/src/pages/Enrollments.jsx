@@ -243,13 +243,12 @@ export default function Enrollments() {
                   </td>
                   <td className="p-3">{e.course?.title || "N/A"}</td>
                   <td
-                    className={`p-3 font-semibold ${
-                      e.status === "active"
-                        ? "text-green-600"
-                        : e.status === "cancelled"
+                    className={`p-3 font-semibold ${e.status === "active"
+                      ? "text-green-600"
+                      : e.status === "cancelled"
                         ? "text-red-600"
                         : "text-gray-600"
-                    }`}
+                      }`}
                   >
                     {e.status.charAt(0).toUpperCase() + e.status.slice(1)}
                   </td>
@@ -264,20 +263,24 @@ export default function Enrollments() {
                     )}
                   </td>
                   <td className="p-3 text-center flex gap-2 justify-center">
-                    <button
-                      onClick={() => openEditForm(e._id)}
-                      className="bg-yellow-500 text-white px-3 py-1 rounded-lg hover:bg-yellow-600 flex items-center gap-1"
-                    >
-                      <Pencil className="w-4 h-4" />
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(e._id)}
-                      className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 flex items-center gap-1"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      Delete
-                    </button>
+                    {e.status !== "cancel" && e.status !== "cancelled" && (
+                      <button
+                        onClick={() => openEditForm(e._id)}
+                        className="bg-yellow-500 text-white px-3 py-1 rounded-lg hover:bg-yellow-600 flex items-center gap-1"
+                      >
+                        <Pencil className="w-4 h-4" />
+                        Edit
+                      </button>
+                    )}
+                    {e.status !== "cancel" && e.status !== "cancelled" && (
+                      <button
+                        onClick={() => handleDelete(e._id)}
+                        className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 flex items-center gap-1"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Delete
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}

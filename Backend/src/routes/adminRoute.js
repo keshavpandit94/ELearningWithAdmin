@@ -21,7 +21,7 @@ import {
 } from "../controllers/adminController.js";
 
 import { adminProtect } from "../middlewares/adminProtect.js";
-import { uploadVideos } from "../middlewares/uploadMiddleware.js";
+import { uploadVideos, uploadImage } from "../middlewares/uploadMiddleware.js";
 
 const router = express.Router();
 
@@ -29,7 +29,7 @@ const router = express.Router();
 router.use(adminProtect);
 
 // Course routes
-router.post("/courses", createCourse);
+router.post("/courses",uploadImage.single("thumbnail"), createCourse);
 router.get("/courses", getAllCourses);
 router.get("/courses/:id", getCourseById);
 router.put("/courses/:id", updateCourse);

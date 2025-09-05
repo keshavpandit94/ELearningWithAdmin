@@ -21,23 +21,33 @@ export const signup = async (req, res) => {
 };
 
 // ========== Login ==========
+// Login Controller
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-
     const user = await User.findOne({ email });
+
     if (!user) return res.status(401).json({ message: "Invalid credentials" });
+
+    // Check suspension
+    if (user.suspendUntil && user.suspendUntil > new Date()) {
+      const now = new Date();
+      const daysLeft = Math.ceil((user.suspendUntil - now) / (1000 * 60 * 60 * 24));
+      return res.status(403).json({
+        message: `You are suspended for ${daysLeft} days for your wrong behavior`
+      });
+    }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(401).json({ message: "Invalid credentials" });
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
-
     res.json({ message: "Login successful", token, user });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
+
 
 // ========== Logout ==========
 export const logout = async (req, res) => {

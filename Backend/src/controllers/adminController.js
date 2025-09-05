@@ -22,9 +22,7 @@ export const createCourse = async (req, res) => {
       return res.status(400).json({ message: "Thumbnail is required" });
 
     if (!instructor || instructor.trim().length < 3)
-      return res
-        .status(400)
-        .json({ message: "Instructor name is required and must be at least 3 characters" });
+      return res.status(400).json({ message: "Instructor name is required and must be at least 3 characters" });
 
     let finalPrice = price;
     let finalDiscount = discountPrice;
@@ -66,8 +64,9 @@ export const getAllCourses = async (req, res) => {
 
 export const getCourseById = async (req, res) => {
   try {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id))
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
       return res.status(400).json({ message: "Invalid course ID" });
+    }
 
     const course = await Course.findById(req.params.id).populate("instructor", "name role");
     if (!course) return res.status(404).json({ message: "Course not found" });
@@ -113,6 +112,7 @@ export const deleteCourse = async (req, res) => {
 export const uploadCourseVideo = async (req, res) => {
   try {
     const { id } = req.params;
+
     if (!mongoose.Types.ObjectId.isValid(id))
       return res.status(400).json({ message: "Invalid course ID" });
 
@@ -140,6 +140,7 @@ export const uploadCourseVideo = async (req, res) => {
 export const deleteCourseVideo = async (req, res) => {
   try {
     const { courseId, videoId } = req.params;
+
     if (!mongoose.Types.ObjectId.isValid(courseId))
       return res.status(400).json({ message: "Invalid course ID" });
 
@@ -149,7 +150,8 @@ export const deleteCourseVideo = async (req, res) => {
     const video = course.videos.id(videoId);
     if (!video) return res.status(404).json({ message: "Video not found" });
 
-    // Cloudinary deletion (if used) can be done here, omitted for brevity
+    // Cloudinary deletion (if used) can be done here
+
     video.remove();
     await course.save();
 
@@ -234,13 +236,14 @@ export const getAllPayments = async (req, res) => {
 export const transferPayment = async (req, res) => {
   try {
     const { id } = req.params;
+
     if (!mongoose.Types.ObjectId.isValid(id))
       return res.status(400).json({ message: "Invalid payment ID" });
 
     const payment = await Payment.findById(id);
     if (!payment) return res.status(404).json({ message: "Payment not found" });
 
-    // Integrate payment gateway here, for demo:
+    // Integrate payment gateway here (demo):
     payment.status = "success";
     await payment.save();
 

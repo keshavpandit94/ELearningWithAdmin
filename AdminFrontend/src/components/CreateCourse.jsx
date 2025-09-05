@@ -24,7 +24,7 @@ export default function CreateCourse({ onCreated, onClose }) {
     discountPrice: 0,
     isFree: false,
     thumbnail: null,
-    instructorName: "",
+    instructor: "",
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -48,7 +48,7 @@ export default function CreateCourse({ onCreated, onClose }) {
       !form.title.trim() ||
       !form.description.trim() ||
       !form.thumbnail ||
-      !form.instructorName.trim()
+      !form.instructor.trim()
     ) {
       return "Title, description, thumbnail, and instructor name are required";
     }
@@ -95,7 +95,7 @@ export default function CreateCourse({ onCreated, onClose }) {
         discountPrice: 0,
         isFree: false,
         thumbnail: null,
-        instructorName: "",
+        instructor: "",
       });
       if (fileInputRef.current) fileInputRef.current.value = "";
 
@@ -154,9 +154,9 @@ export default function CreateCourse({ onCreated, onClose }) {
             <div className="flex items-center gap-2 border rounded-lg px-3 py-2">
               <User className="w-5 h-5 text-indigo-500" />
               <input
-                name="instructorName"
+                name="instructor"
                 placeholder="Instructor Name"
-                value={form.instructorName}
+                value={form.instructor}
                 onChange={handleChange}
                 className="w-full outline-none"
               />
