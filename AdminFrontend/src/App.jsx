@@ -7,6 +7,7 @@ import Courses from "./pages/Course";
 import Enrollments from "./pages/Enrollments";
 import Transactions from "./pages/Transactions";
 import Students from "./pages/Students";
+import AdminInstructorPage from "./pages/Instructor";
 
 export default function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -42,6 +43,7 @@ export default function App() {
               <Route path="/enrollments" element={<Enrollments />} />
               <Route path="/transactions" element={<Transactions />} />
               <Route path="/student" element={<Students />} />
+              <Route path="/instructor" element={<AdminInstructorPage />} />
             </Routes>
           </div>
         </main>

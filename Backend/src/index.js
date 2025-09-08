@@ -7,6 +7,7 @@ import enrollmentRoutes from './routes/enrollmentRoutes.js';
 import progressRoutes from "./routes/progressRoutes.js";
 import cors from 'cors';
 import adminRoutes from "./routes/adminRoute.js"
+import instructorRoute from "./routes/instructorRoutes.js"
 
 dotenv.config();
 const app = express();
@@ -19,6 +20,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/enrollments', enrollmentRoutes);
 app.use('/api/progress', progressRoutes);
+app.use('/api/instructors', instructorRoute);
 app.use('/api/admin', adminRoutes);
 
 

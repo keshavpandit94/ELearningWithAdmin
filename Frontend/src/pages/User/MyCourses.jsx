@@ -1,17 +1,22 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import axios from "axios";
-import { BookOpen, User, GraduationCap, Users, Loader2 } from "lucide-react";
+import { BookOpen, GraduationCap, Users, Loader2, Search, Grid3X3, List } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import BACK_URL from "../../api";
+import CourseEnrolledcard from "../../components/CourseEnrolledCard";
 
 export default function MyCourses() {
-  const [courses, setCourses] = useState([]);
+  const [enrollments, setEnrollments] = useState([]);
+  const [progresses, setProgresses] = useState({});
   const [loading, setLoading] = useState(true);
+  const [viewMode, setViewMode] = useState("grid");
+  const [searchTerm, setSearchTerm] = useState("");
   const [error, setError] = useState(null);
 
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
+  // Fetch enrollments and their progresses
   useEffect(() => {
     setLoading(true);
     setError(null);
@@ -20,10 +25,30 @@ export default function MyCourses() {
       .get(`${BACK_URL}/api/enrollments/my-courses`, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      .then((res) => {
-        const data = res.data;
-        const enrolledCourse = data.filter((item) => item.status === "enrolled");
-        setCourses(enrolledCourse || []);
+      .then(async (res) => {
+        const enrolled = (res.data || []).filter((item) => item.status === "enrolled");
+        console.log(enrolled)
+        setEnrollments(enrolled);
+
+        // Fetch progress for each enrolled course
+        const progressPromises = enrolled.map((item) =>
+          axios
+            .get(`${BACK_URL}/api/progress/${item.course._id}`, {
+              headers: { Authorization: `Bearer ${token}` },
+            })
+            .then((progRes) => ({
+              courseId: item.course._id,
+              progress: computeCourseProgress(progRes.data.videos),
+            }))
+            .catch(() => ({
+              courseId: item.course._id,
+              progress: 0,
+            }))
+        );
+        const results = await Promise.all(progressPromises);
+        const progMap = {};
+        results.forEach((r) => (progMap[r.courseId] = r.progress));
+        setProgresses(progMap);
       })
       .catch(() => {
         setError("Failed to load your courses. Please try again later.");
@@ -33,7 +58,25 @@ export default function MyCourses() {
       });
   }, [token]);
 
-  // Loading state
+  // Helper: compute progress (percent complete) given progress API videos array
+  function computeCourseProgress(videos = []) {
+    if (!videos || videos.length === 0) return 0;
+    const completed = videos.filter((v) => v.completed).length;
+    return Math.round((completed / videos.length) * 100);
+  }
+
+  // Filtering/search
+  const filteredEnrollments = useMemo(() => {
+    const search = searchTerm.trim().toLowerCase();
+    if (!search) return enrollments;
+    return enrollments.filter(
+      (item) =>
+        item.course.title.toLowerCase().includes(search) ||
+        item.course.instructor?.name?.toLowerCase().includes(search)
+    );
+  }, [enrollments, searchTerm]);
+
+  // Loading spinner
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50">
@@ -42,7 +85,7 @@ export default function MyCourses() {
     );
   }
 
-  // Error state
+  // Error
   if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50">
@@ -70,15 +113,45 @@ export default function MyCourses() {
           <div>
             <h1 className="text-3xl font-bold text-gray-900">My Courses</h1>
             <p className="text-gray-600 mt-1">
-              {courses.length > 0
-                ? `${courses.length} course${courses.length === 1 ? "" : "s"} enrolled`
+              {enrollments.length > 0
+                ? `${enrollments.length} course${enrollments.length === 1 ? "" : "s"} enrolled`
                 : "Start your learning journey"}
             </p>
           </div>
         </div>
 
-        {/* Empty state */}
-        {courses.length === 0 ? (
+        {/* Search and View Switcher */}
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <Search className="w-5 h-5 text-gray-400" />
+            <input
+              type="text"
+              className="border border-gray-200 rounded-lg px-3 py-2 w-full sm:w-64 focus:outline-none focus:ring focus:border-blue-400"
+              placeholder="Search your courses..."
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+            />
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setViewMode("grid")}
+              className={`p-2 rounded-md ${viewMode === "grid" ? "bg-blue-600 text-white" : "bg-white text-blue-600 border"}`}
+              title="Grid view"
+            >
+              <Grid3X3 />
+            </button>
+            <button
+              onClick={() => setViewMode("list")}
+              className={`p-2 rounded-md ${viewMode === "list" ? "bg-blue-600 text-white" : "bg-white text-blue-600 border"}`}
+              title="List view"
+            >
+              <List />
+            </button>
+          </div>
+        </div>
+
+        {/* Empty */}
+        {filteredEnrollments.length === 0 ? (
           <div className="text-center py-20">
             <div className="mx-auto w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mb-6">
               <BookOpen className="w-12 h-12 text-blue-600" />
@@ -87,72 +160,32 @@ export default function MyCourses() {
             <p className="text-gray-600 mb-8 max-w-md mx-auto">
               You haven&apos;t enrolled in any courses yet. Discover amazing courses and start learning today!
             </p>
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all">
+            <button
+              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all"
+              onClick={() => navigate("/courses")}
+            >
               Browse Courses
             </button>
           </div>
         ) : (
           <>
-            {/* Courses Grid */}
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {courses.map((course) => {
-                const progress = Math.floor(Math.random() * 100);
-                return (
-                  <div
-                    key={course._id}
-                    className="group bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden border border-gray-100"
-                  >
-                    {/* Header */}
-                    <div className="p-6 pb-4">
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="p-2 bg-blue-100 rounded-lg group-hover:bg-blue-200 transition-colors">
-                          <BookOpen className="w-5 h-5 text-blue-600" />
-                        </div>
-                        <div className="flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-full">
-                          <Users className="w-3 h-3 text-blue-600" />
-                          <span className="text-xs text-blue-600 font-medium">
-                            Enrolled
-                          </span>
-                        </div>
-                      </div>
-                      <h3 className="text-lg font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors">
-                        {course.course.title}
-                      </h3>
-                    </div>
-
-                    {/* Instructor */}
-                    <div className="px-6 pb-4 border-t border-gray-50">
-                      <div className="flex items-center gap-2 text-gray-600">
-                        <User className="w-4 h-4 text-blue-500" />
-                        <span className="text-sm font-medium">
-                          {course.course.instructor?.name || "Instructor"}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Progress */}
-                    <div className="px-6 pb-4">
-                      <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-                        <div
-                          className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-300"
-                          style={{ width: `${progress}%` }}
-                        ></div>
-                      </div>
-                      <p className="text-xs text-gray-500 mt-2">Progress: {progress}%</p>
-                    </div>
-
-                    {/* Action */}
-                    <div className="px-6 pb-6">
-                      <button
-                        onClick={() => navigate(`/continue/${course.course._id}`)}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 px-4 rounded-lg font-medium transition-colors duration-200 text-sm"
-                      >
-                        Continue Learning
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
+            {/* Courses Grid/List */}
+            <div
+              className={
+                viewMode === "grid"
+                  ? "grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                  : "flex flex-col gap-6"
+              }
+            >
+              {filteredEnrollments.map((enrollment) => (
+                <CourseEnrolledcard
+                  key={enrollment._id}
+                  enrollment={enrollment}
+                  progress={progresses[enrollment.course._id] || 0}
+                  viewMode={viewMode}
+                  onContinue={(courseId) => navigate(`/continue/${courseId}`)}
+                />
+              ))}
             </div>
 
             {/* Stats */}
@@ -163,12 +196,11 @@ export default function MyCourses() {
                     <BookOpen className="w-5 h-5 text-blue-600" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-gray-900">{courses.length}</p>
+                    <p className="text-2xl font-bold text-gray-900">{enrollments.length}</p>
                     <p className="text-sm text-gray-600">Total Courses</p>
                   </div>
                 </div>
               </div>
-
               <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-green-100 rounded-lg">
@@ -176,13 +208,16 @@ export default function MyCourses() {
                   </div>
                   <div>
                     <p className="text-2xl font-bold text-gray-900">
-                      {Math.floor(Math.random() * courses.length + 1)}
+                      {
+                        enrollments.filter(
+                          (en) => (progresses[en.course._id] || 0) >= 90
+                        ).length
+                      }
                     </p>
                     <p className="text-sm text-gray-600">Completed</p>
                   </div>
                 </div>
               </div>
-
               <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-yellow-100 rounded-lg">
@@ -190,7 +225,7 @@ export default function MyCourses() {
                   </div>
                   <div>
                     <p className="text-2xl font-bold text-gray-900">
-                      {new Set(courses.map((c) => c.course.instructor?.name)).size}
+                      {new Set(enrollments.map((c) => c.course.instructor?.name)).size}
                     </p>
                     <p className="text-sm text-gray-600">Instructors</p>
                   </div>

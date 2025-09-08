@@ -13,10 +13,13 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import BACK_URL from "../api";
+import CardComponents from "../components/CourseCard";  // <-- import CardComponents
+import InstructorCard from "../components/InstructorCard";
 
 export default function Home() {
   const navigate = useNavigate();
   const [courses, setCourses] = useState([]);
+  const [instructors, setInstructors] = useState([]);
   const [user, setUser] = useState(null);
 
   // Fetch user and courses on mount
@@ -35,17 +38,29 @@ export default function Home() {
     axios.get(`${BACK_URL}/api/courses`)
       .then((res) => setCourses(res.data))
       .catch((err) => console.error("Error fetching courses:", err));
-  }, []);
+    
+    axios
+      .get(`${BACK_URL}/api/instructors`)
+      .then((res) =>{
+        console.log(res.data)
+ setInstructors(res.data || [])
+      })
+      .catch((err) => console.error("Failed to fetch instructors:", err));
+    
+    }, []);
 
   // Navigate to course details
   const CourseDetailsHandler = (courseId) => {
     navigate(`/courses/${courseId}`);
-  }
+  };
+
+    const goToInstructorDetails = (instructorId) => {
+    navigate(`/instructors/${instructorId}`);
+  };
 
   return (
     <>
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
-
       {/* Hero Section */}
       <div className="text-center py-16 px-6">
         <div className="max-w-4xl mx-auto">
@@ -103,49 +118,35 @@ export default function Home() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {courses.map((course) => (
-              <div key={course._id} className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 group hover:scale-105">
-                <div className="p-6">
-                  <div className="relative mb-4">
-                    {course.thumbnail?.url ? (
-                      <img
-                        src={course.thumbnail.url}
-                        alt={course.title}
-                        className="w-full h-48 object-cover rounded-lg"
-                      />
-                    ) : (
-                      <div className="bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center h-48 rounded-lg">
-                        <BookOpen className="w-12 h-12 text-blue-500" />
-                      </div>
-                    )}
-                  </div>
-
-                  <h3 className="text-xl font-bold text-gray-800 mb-2">{course.title}</h3>
-                  <p className="text-gray-600 mb-4 text-sm leading-relaxed">{course.description}</p>
-
-                  <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
-                    <div className="flex items-center gap-1">
-                      <Users className="w-4 h-4" />
-                      <span>{course.students || 0} students</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Clock className="w-4 h-4" />
-                      <span>{course.duration || "N/A"}</span>
-                    </div>
-                  </div>
-
-                  <button 
-                    onClick={() => CourseDetailsHandler(course._id)}
-                    className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 font-medium group-hover:shadow-lg"
-                  >
-                    <Play className="w-4 h-4" />
-                    Start Learning
-                  </button>
-                </div>
-              </div>
+              <CardComponents
+                key={course._id}
+                course={course}
+                status={null}         // Assuming no enrolled status on home page
+                enrolling={false}     // No loading state here
+                navigate={navigate}   // Pass navigate to handle navigation inside Card
+                viewMode="grid"       // Use grid mode for Home page cards
+              />
             ))}
           </div>
         </div>
       </section>
+
+        <section className="bg-gray-50 border-t border-gray-200 px-6 py-16">
+          <div className="mx-auto max-w-7xl">
+            <h2 className="mb-8 text-center text-3xl font-bold text-gray-800 md:text-4xl">
+              Meet Our Instructors
+            </h2>
+            <div className="grid gap-8 md:grid-cols-3">
+              {instructors.map((instructor) => (
+                <InstructorCard
+                  key={instructor._id}
+                  instructor={instructor}
+                  onClick={() => goToInstructorDetails(instructor._id)}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
 
       {/* Final Call to Action for Guests */}
       {!user && (
@@ -167,7 +168,6 @@ export default function Home() {
           </div>
         </section>
       )}
-  
     </div>
     </>
   );

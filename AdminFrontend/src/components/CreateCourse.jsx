@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import BACK_URL, { ADMIN_TOKEN } from "../api";
 import {
@@ -26,11 +26,21 @@ export default function CreateCourse({ onCreated, onClose }) {
     thumbnail: null,
     instructor: "",
   });
+  const [instructors, setInstructors] = useState([]);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
   const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    axios
+      .get(`${BACK_URL}/api/admin/instructors`, {
+        headers: { "x-admin-token": ADMIN_TOKEN },
+      })
+      .then((res) => setInstructors(res.data || []))
+      .catch(() => setError("Failed to load instructors"));
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
@@ -48,9 +58,9 @@ export default function CreateCourse({ onCreated, onClose }) {
       !form.title.trim() ||
       !form.description.trim() ||
       !form.thumbnail ||
-      !form.instructor.trim()
+      !form.instructor
     ) {
-      return "Title, description, thumbnail, and instructor name are required";
+      return "Title, description, thumbnail, and instructor are required";
     }
     if (!form.isFree && form.price <= 0) {
       return "Price must be greater than 0 for paid courses";
@@ -80,13 +90,13 @@ export default function CreateCourse({ onCreated, onClose }) {
       const res = await axios.post(`${BACK_URL}/api/admin/courses`, formData, {
         headers: {
           "x-admin-token": ADMIN_TOKEN,
+          "Content-Type": "multipart/form-data",
         },
       });
 
       onCreated(res.data);
       setSuccess("Course created successfully!");
 
-      // Reset form
       setForm({
         title: "",
         description: "",
@@ -99,10 +109,7 @@ export default function CreateCourse({ onCreated, onClose }) {
       });
       if (fileInputRef.current) fileInputRef.current.value = "";
 
-      // Auto close after success
-      if (onClose) {
-        setTimeout(() => onClose(), 1500);
-      }
+      if (onClose) setTimeout(() => onClose(), 1500);
     } catch {
       setError("Failed to create course");
     } finally {
@@ -113,7 +120,6 @@ export default function CreateCourse({ onCreated, onClose }) {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center px-4 z-50 overflow-y-auto">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl p-6 relative animate-fadeIn">
-        {/* Close button */}
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-500 hover:text-red-500 transition"
@@ -137,9 +143,7 @@ export default function CreateCourse({ onCreated, onClose }) {
             </div>
           )}
 
-          {/* Inputs */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Title */}
             <div className="flex items-center gap-2 border rounded-lg px-3 py-2">
               <BookOpen className="w-5 h-5 text-indigo-500" />
               <input
@@ -150,18 +154,24 @@ export default function CreateCourse({ onCreated, onClose }) {
                 className="w-full outline-none"
               />
             </div>
-            {/* Instructor */}
+
             <div className="flex items-center gap-2 border rounded-lg px-3 py-2">
               <User className="w-5 h-5 text-indigo-500" />
-              <input
+              <select
                 name="instructor"
-                placeholder="Instructor Name"
                 value={form.instructor}
                 onChange={handleChange}
-                className="w-full outline-none"
-              />
+                className="w-full outline-none bg-transparent"
+              >
+                <option value="">Select Instructor</option>
+                {instructors.map((inst) => (
+                  <option key={inst._id} value={inst._id}>
+                    {inst.name}
+                  </option>
+                ))}
+              </select>
             </div>
-            {/* Description */}
+
             <div className="flex items-start gap-2 border rounded-lg px-3 py-2 md:col-span-2">
               <FileText className="w-5 h-5 text-indigo-500 mt-1" />
               <textarea
@@ -173,7 +183,7 @@ export default function CreateCourse({ onCreated, onClose }) {
                 rows={3}
               />
             </div>
-            {/* Duration */}
+
             <div className="flex items-center gap-2 border rounded-lg px-3 py-2">
               <Clock className="w-5 h-5 text-indigo-500" />
               <input
@@ -184,7 +194,7 @@ export default function CreateCourse({ onCreated, onClose }) {
                 className="w-full outline-none"
               />
             </div>
-            {/* Price */}
+
             <div className="flex items-center gap-2 border rounded-lg px-3 py-2">
               <DollarSign className="w-5 h-5 text-green-600" />
               <input
@@ -197,7 +207,7 @@ export default function CreateCourse({ onCreated, onClose }) {
                 disabled={form.isFree}
               />
             </div>
-            {/* Discount */}
+
             <div className="flex items-center gap-2 border rounded-lg px-3 py-2">
               <Tag className="w-5 h-5 text-pink-500" />
               <input
@@ -210,7 +220,7 @@ export default function CreateCourse({ onCreated, onClose }) {
                 disabled={form.isFree}
               />
             </div>
-            {/* Free */}
+
             <label className="flex items-center gap-2 border rounded-lg px-3 py-2 cursor-pointer select-none">
               <input
                 name="isFree"
@@ -220,7 +230,7 @@ export default function CreateCourse({ onCreated, onClose }) {
               />
               Free Course
             </label>
-            {/* Thumbnail */}
+
             <div className="flex flex-col gap-2 border rounded-lg px-3 py-2 md:col-span-2">
               <div className="flex items-center gap-2">
                 <ImageIcon className="w-5 h-5 text-indigo-500" />
@@ -243,7 +253,6 @@ export default function CreateCourse({ onCreated, onClose }) {
             </div>
           </div>
 
-          {/* Submit */}
           <button
             type="submit"
             disabled={loading}

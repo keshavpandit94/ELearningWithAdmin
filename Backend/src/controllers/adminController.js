@@ -2,7 +2,141 @@ import Course from "../models/Course.model.js";
 import Enrollment from "../models/Enrollment.model.js";
 import Payment from "../models/Payment.model.js";
 import User from "../models/User.model.js";
+import Instructor from "../models/Instructor.model.js";
 import mongoose from "mongoose";
+
+// ---------- Instructor CURD ----------
+
+// Create Instructor
+export const createInstructor = async (req, res) => {
+  try {
+    const { name, email, bio } = req.body;
+
+    if (!name || name.trim().length < 3)
+      return res.status(400).json({ message: "Instructor name is required and must be at least 3 characters" });
+
+    if (!email || email.trim().length < 5)
+      return res.status(400).json({ message: "Valid email is required" });
+
+    // Optional profile picture handling
+    const profilePicture = req.file
+      ? {
+          public_id: req.file.filename,
+          url: req.file.path,
+        }
+      : null;
+
+    const existing = await Instructor.findOne({ email: email.trim().toLowerCase() });
+    if (existing) return res.status(400).json({ message: "Email already exists" });
+
+    const instructor = await Instructor.create({
+      name: name.trim(),
+      email: email.trim().toLowerCase(),
+      bio,
+      profilePicture,
+    });
+
+    res.status(201).json(instructor);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Get all Instructors
+export const getAllInstructors = async (req, res) => {
+  try {
+    const instructors = await Instructor.find();
+    res.json(instructors);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Get Instructor by ID
+export const getInstructorById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id))
+      return res.status(400).json({ message: "Invalid instructor ID" });
+
+    const instructor = await Instructor.findById(id);
+    if (!instructor) return res.status(404).json({ message: "Instructor not found" });
+
+    res.json(instructor);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Update Instructor
+export const updateInstructor = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updates = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(id))
+      return res.status(400).json({ message: "Invalid instructor ID" });
+
+    const instructor = await Instructor.findById(id);
+    if (!instructor) return res.status(404).json({ message: "Instructor not found" });
+
+    ["name", "email", "bio"].forEach((field) => {
+      if (updates[field] !== undefined) instructor[field] = updates[field];
+    });
+
+    if (req.file) {
+      instructor.profilePicture = {
+        public_id: req.file.filename,
+        url: req.file.path,
+      };
+    }
+
+    await instructor.save();
+    res.json(instructor);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Delete Instructor
+export const deleteInstructor = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id))
+      return res.status(400).json({ message: "Invalid instructor ID" });
+
+    const instructor = await Instructor.findById(id);
+    if (!instructor) return res.status(404).json({ message: "Instructor not found" });
+
+    await instructor.deleteOne();
+    res.json({ message: "Instructor deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// New: Get an instructor with total duration of their courses
+export const getInstructorWithTotalCourseTime = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id))
+      return res.status(400).json({ message: "Invalid instructor ID" });
+
+    const instructor = await Instructor.findById(id);
+    if (!instructor) return res.status(404).json({ message: "Instructor not found" });
+
+    const courses = await Course.find({ instructor: id }, { duration: 1 });
+    const totalDuration = courses.reduce((acc, course) => acc + (course.duration || 0), 0);
+
+    res.json({
+      instructor,
+      totalCourseTime: totalDuration,
+      courses,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 // ---------- Course CRUD ----------
 
@@ -55,7 +189,7 @@ export const createCourse = async (req, res) => {
 
 export const getAllCourses = async (req, res) => {
   try {
-    const courses = await Course.find().populate("instructor", "name role");
+    const courses = await Course.find().populate("instructor", "name email bio profilePicture");
     res.json(courses);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -68,7 +202,7 @@ export const getCourseById = async (req, res) => {
       return res.status(400).json({ message: "Invalid course ID" });
     }
 
-    const course = await Course.findById(req.params.id).populate("instructor", "name role");
+    const course = await Course.findById(req.params.id).populate("instructor", "name email bio profilePicture");
     if (!course) return res.status(404).json({ message: "Course not found" });
 
     res.json(course);
@@ -85,11 +219,28 @@ export const updateCourse = async (req, res) => {
     const course = await Course.findById(id);
     if (!course) return res.status(404).json({ message: "Course not found" });
 
+    // Update primitive fields normally
     for (const key of ["title", "description", "duration", "price", "discountPrice", "isFree"]) {
       if (updates[key] !== undefined) course[key] = updates[key];
     }
 
+    // Handle instructor update by ID (if provided)
+    if (updates.instructor !== undefined) {
+      if (!mongoose.Types.ObjectId.isValid(updates.instructor)) {
+        return res.status(400).json({ message: "Invalid instructor ID" });
+      }
+      const instructorExists = await Instructor.findById(updates.instructor);
+      if (!instructorExists) {
+        return res.status(404).json({ message: "Instructor not found" });
+      }
+      course.instructor = updates.instructor;
+    }
+
     await course.save();
+
+    // Optionally populate instructor info before sending response
+    await course.populate("instructor", "name email bio");
+
     res.json(course);
   } catch (error) {
     res.status(500).json({ message: error.message });

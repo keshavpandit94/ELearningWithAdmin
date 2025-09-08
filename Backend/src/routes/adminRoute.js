@@ -18,6 +18,13 @@ import {
   unsuspendUser,
   uploadCourseVideo,
   deleteCourseVideo,
+  // Instructor controllers to add
+  createInstructor,
+  getAllInstructors,
+  getInstructorById,
+  updateInstructor,
+  deleteInstructor,
+  getInstructorWithTotalCourseTime,
 } from "../controllers/adminController.js";
 
 import { adminProtect } from "../middlewares/adminProtect.js";
@@ -29,7 +36,7 @@ const router = express.Router();
 router.use(adminProtect);
 
 // Course routes
-router.post("/courses",uploadImage.single("thumbnail"), createCourse);
+router.post("/courses", uploadImage.single("thumbnail"), createCourse);
 router.get("/courses", getAllCourses);
 router.get("/courses/:id", getCourseById);
 router.put("/courses/:id", updateCourse);
@@ -50,7 +57,7 @@ router.delete("/enrollments/:id", deleteEnrollment);
 
 // Payment routes
 router.get("/payments", getAllPayments);
-router.post("/payments/:id/transfer", transferPayment); // e.g., POST to trigger transfer
+router.post("/payments/:id/transfer", transferPayment);
 
 // User routes
 router.get("/users", getAllUsers);
@@ -58,5 +65,13 @@ router.get("/users/:id", getUserById);
 router.put("/users/:id", updateUser);
 router.post("/users/:id/suspend", suspendUser);
 router.post("/users/:id/unsuspend", unsuspendUser);
+
+// Instructor routes (new)
+router.post("/instructors", uploadImage.single("profilePicture"), createInstructor);
+router.get("/instructors", getAllInstructors);
+router.get("/instructors/:id", getInstructorById);
+router.put("/instructors/:id", uploadImage.single("profilePicture"), updateInstructor);
+router.delete("/instructors/:id", deleteInstructor);
+router.get("/instructors/:id/details", getInstructorWithTotalCourseTime);
 
 export default router;

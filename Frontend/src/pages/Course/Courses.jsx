@@ -2,16 +2,18 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
-  BookOpen, User, Star, Clock, Play,
-  Search, Filter, Grid3X3, List, ChevronRight,
-  Eye
+  BookOpen,
+  Search,
+  Filter,
+  Grid3X3,
+  List,
 } from "lucide-react";
-import useEnroll from "../../hooks/useEnroll"; 
+import useEnroll from "../../hooks/useEnroll";
 import BACK_URL from "../../api";
+import CardComponents from "../../components/CourseCard";
 
 export default function Courses() {
   const [courses, setCourses] = useState([]);
-  const [user, setUser] = useState(null);
   const [viewMode, setViewMode] = useState("grid");
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
@@ -21,70 +23,61 @@ export default function Courses() {
   const token = localStorage.getItem("token");
   const { enroll, isLoading: enrolling } = useEnroll({ token });
 
-  // Fetch user + courses + enrolled (students only)
+  // Fetch courses and enrollments (if logged in)
   useEffect(() => {
-    if (!token) {
-      setUser(null);
-      return;
-    }
-
-    // fetch user info
-    axios
-      .get(`${BACK_URL}/api/auth/me`, { headers: { Authorization: `Bearer ${token}` } })
-      .then((res) => {
-        setUser(res.data.user);
-        localStorage.setItem("user", JSON.stringify(res.data.user));
-      })
-      .catch(() => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        setUser(null);
-      });
-
     setLoading(true);
-
-    const fetchCourses = async () => {
-      try {
-        // Always fetch all courses for students
-        const res = await axios.get(`${BACK_URL}/api/courses`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+    // Fetch courses (public, no auth required)
+    axios
+      .get(`${BACK_URL}/api/courses`)
+      .then((res) => {
         setCourses(res.data || []);
-      } catch (err) {
+      })
+      .catch((err) => {
         console.error("Failed to fetch courses:", err);
         alert("Unable to load courses. Please try again.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCourses();
-
-    // fetch enrolled courses (students only)
-    axios
-      .get(`${BACK_URL}/api/enrollments/my-courses`, {
-        headers: { Authorization: `Bearer ${token}` },
       })
-      .then((res) => setEnrolledCourses(res.data || []))
-      .catch((err) => console.error("Failed to load enrollments:", err));
+      .finally(() => setLoading(false));
+
+    // If logged in, fetch enrolled courses
+    if (token) {
+      axios
+        .get(`${BACK_URL}/api/enrollments/my-courses`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((res) => setEnrolledCourses(res.data || []))
+        .catch((err) =>
+          console.error("Failed to load enrollments:", err)
+        );
+    } else {
+      setEnrolledCourses([]);
+    }
   }, [token]);
 
-  // Get enrollment status for a course
+  // Get enrollment status for each course
   const getEnrollmentStatus = (courseId) => {
-    const record = enrolledCourses.find((ec) => ec.course?._id === courseId);
+    const record = enrolledCourses.find(
+      (ec) => ec.course?._id === courseId
+    );
     return record ? record.status : null; // enrolled | pending | null
   };
 
-  // Case-insensitive search filter
-  const filteredCourses = courses.filter((course) =>
-    course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    course.instructor?.name?.toLowerCase().includes(searchTerm.toLowerCase())
+  // Filter courses by search term
+  const filteredCourses = courses.filter(
+    (course) =>
+      course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      course.instructor?.name
+        ?.toLowerCase()
+        .includes(searchTerm.toLowerCase())
   );
+
+  // Navigate to course details (no login required)
+  const openCourseDetails = (courseId) => {
+    navigate(`/courses/${courseId}`);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
         {/* Header */}
         <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -150,7 +143,7 @@ export default function Courses() {
           </div>
         )}
 
-        {/* Courses */}
+        {/* Courses List */}
         {!loading && filteredCourses.length > 0 && (
           <div
             className={
@@ -163,128 +156,27 @@ export default function Courses() {
               const status = getEnrollmentStatus(c._id);
 
               return (
-                <div
+                <CardComponents
                   key={c._id}
-                  onClick={() =>
-                    status === "enrolled"
-                      ? navigate(`/continue/${c._id}`)
-                      : navigate(`/courses/${c._id}`)
-                  }
-                  className={`bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 group hover:scale-105 cursor-pointer ${
-                    viewMode === "list" ? "flex gap-6 p-6" : ""
-                  }`}
-                >
-                  {/* Thumbnail */}
-                  <div className={`relative ${viewMode === "list" ? "w-48 h-32 flex-shrink-0" : ""}`}>
-                    {c.thumbnail?.url ? (
-                      <img
-                        src={c.thumbnail.url}
-                        alt={c.title}
-                        className={`w-full object-cover ${viewMode === "list" ? "h-32 rounded-lg" : "h-48"}`}
-                      />
-                    ) : (
-                      <div className={`bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center ${viewMode === "list" ? "h-32 rounded-lg" : "h-48"}`}>
-                        <BookOpen className="w-12 h-12 text-blue-500" />
-                      </div>
-                    )}
-                    <div className="absolute top-3 right-3">
-                      <div className="bg-black bg-opacity-60 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
-                        <Eye className="w-3 h-3" /> {c.students || 0}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Content */}
-                  <div className={`p-6 flex-1 ${viewMode === "list" ? "p-0" : ""}`}>
-                    <div className="flex items-start justify-between mb-3">
-                      <span className="text-xl font-bold text-gray-800 hover:text-blue-600 line-clamp-2">
-                        {c.title}
-                      </span>
-                      <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-blue-600 flex-shrink-0 ml-2" />
-                    </div>
-
-                    {/* Instructor */}
-                    <div className="flex items-center gap-2 mb-3">
-                      <div className="bg-gray-100 p-1.5 rounded-full">
-                        <User className="w-4 h-4 text-gray-600" />
-                      </div>
-                      <span className="text-sm text-gray-600">{c.instructor?.name}</span>
-                    </div>
-
-                    {/* Ratings + Duration */}
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-1">
-                        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                        <span className="text-sm font-medium text-gray-700">{c.rating || "4.5"}</span>
-                        <span className="text-sm text-gray-500">({c.students || 0})</span>
-                      </div>
-                      <div className="flex items-center gap-1 text-sm text-gray-500">
-                        <Clock className="w-4 h-4" />
-                        <span>{c.duration || "8 weeks"}</span>
-                      </div>
-                    </div>
-
-                    {/* Actions for students */}
-                    <div className="flex items-center justify-between">
-                      {status === "enrolled" ? (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(`/continue/${c._id}`);
-                          }}
-                          className="flex items-center gap-1 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 text-sm font-medium"
-                        >
-                          <Play className="w-4 h-4" /> Continue
-                        </button>
-                      ) : status === "pending" ? (
-                        <button
-                          disabled
-                          onClick={(e) => e.stopPropagation()}
-                          className="flex items-center gap-1 bg-yellow-500 text-white px-4 py-2 rounded-lg text-sm font-medium opacity-70 cursor-not-allowed"
-                        >
-                          <Play className="w-4 h-4" /> Pending Approval
-                        </button>
-                      ) : (
-                        <button
-                          disabled={enrolling}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (c.isFree) {
-                              enroll(c._id);
-                            } else {
-                              enroll(c._id, { paid: true });
-                            }
-                          }}
-                          className="flex items-center gap-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm font-medium disabled:opacity-50"
-                        >
-                          <Play className="w-4 h-4" />
-                          {enrolling ? "Processing..." : "Enroll Now"}
-                        </button>
-                      )}
-
-                      {/* Price */}
-                      <div className="flex flex-col items-end">
-                        {c.isFree ? (
-                          <span className="text-lg font-bold text-green-600">Free</span>
-                        ) : (
-                          <>
-                            <span className="text-lg font-bold text-gray-800">
-                              ₹{c.discountPrice > 0 ? c.discountPrice : c.price}
-                            </span>
-                            {c.discountPrice > 0 && (
-                              <span className="text-sm text-gray-500 line-through">₹{c.price}</span>
-                            )}
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                  course={c}
+                  status={status}
+                  enrolling={enrolling}
+                  enroll={enroll}
+                  // Pass a custom navigate function to open details page regardless of login
+                  navigate={() => openCourseDetails(c._id)}
+                  viewMode={viewMode}
+                />
               );
             })}
           </div>
         )}
 
+        {/* No courses matching */}
+        {!loading && filteredCourses.length === 0 && (
+          <div className="text-center text-gray-500 py-16">
+            No courses found matching "{searchTerm}"
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,21 +1,28 @@
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import BACK_URL from "../api";
+import BACKEND_URL from "../api";
 
 export default function useEnroll({ token, user, courseId }) {
   const [loading, setLoading] = useState(false);
   const [isEnrolled, setIsEnrolled] = useState(false);
 
+  // Helper to check enrollment status
   const checkEnrollment = useCallback(async () => {
     if (!token || !courseId) return;
     try {
-      const res = await axios.get(`${BACK_URL}/api/enrollments/my-courses`, {
+      const res = await axios.get(`${BACKEND_URL}/api/enrollments/my-courses`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      const enrolledCourses = res.data[0]?.course || [];
-      if (enrolledCourses._id === courseId && enrolledCourses.status ==="enrolled" ) setIsEnrolled(true);
+
+      // Search courses that match current courseId with enrolled status
+      const enrolledCourse = res.data.find(
+        (entry) => entry.course?._id === courseId && entry.status === "enrolled"
+      );
+
+      setIsEnrolled(!!enrolledCourse);
     } catch (err) {
       console.error("Enrollment check failed:", err);
+      setIsEnrolled(false);
     }
   }, [token, courseId]);
 
@@ -23,6 +30,7 @@ export default function useEnroll({ token, user, courseId }) {
     checkEnrollment();
   }, [checkEnrollment]);
 
+  // Enrollment function
   const enroll = async (course) => {
     if (!token) {
       alert("Please login to enroll.");
@@ -30,20 +38,18 @@ export default function useEnroll({ token, user, courseId }) {
     }
 
     setLoading(true);
- 
-    console.log("enroll hit")
 
     try {
-      // Step 1: Attempt enrollment
       const res = await axios.post(
-        `${BACK_URL}/api/enrollments`,
+        `${BACKEND_URL}/api/enrollments`,
         { courseId: course._id },
-        { headers: { Authorization: `Bearer ${token}` } }
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
 
       const data = res.data;
 
-      // Free course → directly enrolled
       if (data.message === "Enrolled successfully") {
         alert("✅ Enrolled in free course!");
         await checkEnrollment();
@@ -51,9 +57,8 @@ export default function useEnroll({ token, user, courseId }) {
         return;
       }
 
-      // Paid course → Razorpay
       if (data.message === "Payment required") {
-        const { orderId, price, currency, key } = data; // Use `price` if backend uses price
+        const { orderId, price, currency, key } = data;
 
         const options = {
           key,
@@ -70,14 +75,16 @@ export default function useEnroll({ token, user, courseId }) {
           handler: async (response) => {
             try {
               const verifyRes = await axios.post(
-                `${BACK_URL}/api/enrollments/verify`,
+                `${BACKEND_URL}/api/enrollments/verify`,
                 {
                   razorpay_order_id: response.razorpay_order_id,
                   razorpay_payment_id: response.razorpay_payment_id,
                   razorpay_signature: response.razorpay_signature,
                   courseId: course._id,
                 },
-                { headers: { Authorization: `Bearer ${token}` } }
+                {
+                  headers: { Authorization: `Bearer ${token}` },
+                }
               );
 
               if (verifyRes.data.message.includes("success")) {
@@ -94,49 +101,52 @@ export default function useEnroll({ token, user, courseId }) {
           },
           modal: {
             ondismiss: async () => {
-              alert("⚠️ Payment modal closed, payment not completed.");
-              // console.log("modal.ondismiss event triggered");
+              alert("⚠️ Payment window closed, enrollment incomplete.");
               try {
                 await axios.post(
-                  `${BACK_URL}/api/enrollments/payment-failed`,
+                  `${BACKEND_URL}/api/enrollments/payment-failed`,
                   { orderId, courseId: course._id },
                   { headers: { Authorization: `Bearer ${token}` } }
                 );
               } catch (error) {
-                console.error("Failed to update payment status on modal close:", error);
+                console.error("Failed updating payment state on dismissal:", error);
               }
               setLoading(false);
-            }
-          }
+            },
+          },
         };
 
-        // Ensure Razorpay script loaded
+        // Load Razorpay script if not already loaded
         if (!window.Razorpay) {
-          await loadRazorpayScript();
+          const loaded = await loadRazorpayScript();
+          if (!loaded) {
+            alert("Failed to load payment gateway. Try again later.");
+            setLoading(false);
+            return;
+          }
         }
 
-        const rzp1 = new window.Razorpay(options);
+        const rzp = new window.Razorpay(options);
 
-        // Additional payment failure handler
-        rzp1.on("payment.failed", async () => {
-          alert("⚠️ Payment was cancelled or failed.");
+        rzp.on("payment.failed", async () => {
+          alert("⚠️ Payment failed or cancelled.");
           try {
             await axios.post(
-              `${BACK_URL}/api/enrollments/payment-failed`,
+              `${BACKEND_URL}/api/enrollments/payment-failed`,
               { orderId, courseId: course._id },
               { headers: { Authorization: `Bearer ${token}` } }
             );
           } catch (error) {
-            console.error("Failed to update payment status on cancellation:", error);
+            console.error("Failed updating payment state on failure:", error);
           }
           setLoading(false);
         });
 
-        rzp1.open();
+        rzp.open();
       }
     } catch (err) {
       console.error("Enrollment error:", err);
-      alert("❌ Something went wrong.");
+      alert("❌ Something went wrong during enrollment.");
       setLoading(false);
     }
   };
@@ -144,7 +154,7 @@ export default function useEnroll({ token, user, courseId }) {
   return { enroll, isEnrolled, loading, checkEnrollment };
 }
 
-// Utility loader
+// Utility to dynamically load Razorpay JS SDK
 function loadRazorpayScript() {
   return new Promise((resolve) => {
     if (window.Razorpay) {

@@ -1,19 +1,14 @@
 import Course from "../models/Course.model.js";
 import mongoose from "mongoose";
 
-
-// Get all courses (only include instructor data if instructor role is student)
+// Get all courses (only include instructor data if instructor role is 'student')
 export const getAllCourses = async (req, res) => {
   try {
-    // Populate instructor info and filter only students
+    // Populate instructor data, selecting only relevant fields
     let courses = await Course.find().populate({
       path: "instructor",
-      match: { role: "student" },
-      select: "name role",
+      select: "name email bio profilePicture", // fields from Instructor model
     });
-
-    // Remove courses whose instructor was filtered out (populate returns null)
-    courses = courses.filter(course => course.instructor !== null);
 
     res.json(courses);
   } catch (error) {
@@ -21,25 +16,25 @@ export const getAllCourses = async (req, res) => {
   }
 };
 
-// Get single course (only include instructor data if role is student)
+// Get single course by ID (populate instructor info)
 export const getCourseById = async (req, res) => {
   try {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: "Invalid course ID" });
     }
 
-    const course = await Course.findById(req.params.id).populate({
+    const course = await Course.findById(id).populate({
       path: "instructor",
-      match: { role: "student" },
-      select: "name role",
+      select: "name email bio profilePicture", // fields from Instructor model
     });
 
-    if (!course || !course.instructor) {
-      return res.status(404).json({ message: "Course not found or instructor not a student" });
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
     }
 
     res.json(course);
-  } catch (err) {
+  } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
 };

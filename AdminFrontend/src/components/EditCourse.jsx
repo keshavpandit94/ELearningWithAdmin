@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { X, Save, XCircle, Clock, Tag, DollarSign, Type, BookOpen } from "lucide-react"; 
+import { X, Save, XCircle, Clock, Tag, DollarSign, Type, BookOpen, User, Users } from "lucide-react"; 
 import BACK_URL, { ADMIN_TOKEN } from "../api";
 
 export default function EditCourse({ course, onSave, onCancel, onClose }) {
@@ -11,7 +11,9 @@ export default function EditCourse({ course, onSave, onCancel, onClose }) {
     price: 0,
     discountPrice: 0,
     isFree: false,
+    instructor: "", // will hold instructor id
   });
+  const [instructors, setInstructors] = useState([]); // all instructors to choose from
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -23,9 +25,22 @@ export default function EditCourse({ course, onSave, onCancel, onClose }) {
         price: course.price,
         discountPrice: course.discountPrice,
         isFree: course.isFree,
+        instructor: course.instructor?._id || "", // expect populated instructor object
       });
     }
   }, [course]);
+
+  // Fetch instructors for dropdown on mount
+  useEffect(() => {
+    axios
+      .get(`${BACK_URL}/api/admin/instructors`, {
+        headers: { "x-admin-token": ADMIN_TOKEN },
+      })
+      .then((res) => setInstructors(res.data))
+      .catch(() => {
+        setError("Failed to load instructors");
+      });
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -37,13 +52,17 @@ export default function EditCourse({ course, onSave, onCancel, onClose }) {
 
   const handleSave = async () => {
     try {
+      if (!editFields.instructor) {
+        setError("Instructor is required.");
+        return;
+      }
       const res = await axios.put(
         `${BACK_URL}/api/admin/courses/${course._id}`,
         editFields,
         { headers: { "x-admin-token": ADMIN_TOKEN } }
       );
       onSave(res.data);
-      if (onClose) onClose(); 
+      if (onClose) onClose();
     } catch {
       setError("❌ Failed to save course.");
     }
@@ -52,7 +71,6 @@ export default function EditCourse({ course, onSave, onCancel, onClose }) {
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50 p-4">
       <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-xl p-6 sm:p-8">
-        
         {/* Close button */}
         <button
           onClick={onClose}
@@ -83,7 +101,7 @@ export default function EditCourse({ course, onSave, onCancel, onClose }) {
               value={editFields.title}
               onChange={handleChange}
               placeholder="Course Title"
-            />
+              />
           </div>
 
           <textarea
@@ -103,6 +121,24 @@ export default function EditCourse({ course, onSave, onCancel, onClose }) {
               onChange={handleChange}
               placeholder="Duration (e.g., 10 hours)"
             />
+          </div>
+
+          {/* Instructor Dropdown */}
+          <div className="flex items-center gap-2 border rounded-lg px-3 py-2">
+            <Users className="w-4 h-4 text-gray-400" />
+            <select
+              name="instructor"
+              value={editFields.instructor}
+              onChange={handleChange}
+              className="w-full outline-none bg-transparent"
+            >
+              <option value="">Select Instructor</option>
+              {instructors.map((inst) => (
+                <option key={inst._id} value={inst._id}>
+                  {inst.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="flex items-center gap-2 border rounded-lg px-3 py-2">
