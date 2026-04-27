@@ -5,6 +5,7 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
+<<<<<<< HEAD
     extend: {
       animation: {
         shimmer: 'shimmer 2s infinite',
@@ -15,6 +16,9 @@ export default {
         },
       },
     },
+=======
+    extend: {},
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
   },
   plugins: [],
 }

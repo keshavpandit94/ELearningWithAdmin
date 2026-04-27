@@ -1,10 +1,16 @@
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
+<<<<<<< HEAD
 import { motion, AnimatePresence } from "framer-motion";
 import BACK_URL, { ADMIN_TOKEN } from "../api";
 import {
   BookOpen,
   PlusCircle,
+=======
+import BACK_URL, { ADMIN_TOKEN } from "../api";
+import {
+  BookOpen,
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
   FileText,
   Clock,
   DollarSign,
@@ -15,9 +21,12 @@ import {
   CheckCircle2,
   X,
   User,
+<<<<<<< HEAD
   Sparkles,
   UploadCloud,
   ChevronRight
+=======
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
 } from "lucide-react";
 
 export default function CreateCourse({ onCreated, onClose }) {
@@ -44,7 +53,11 @@ export default function CreateCourse({ onCreated, onClose }) {
         headers: { "x-admin-token": ADMIN_TOKEN },
       })
       .then((res) => setInstructors(res.data || []))
+<<<<<<< HEAD
       .catch(() => setError("System Error: Failed to load faculty records."));
+=======
+      .catch(() => setError("Failed to load instructors"));
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
   }, []);
 
   const handleChange = (e) => {
@@ -58,10 +71,36 @@ export default function CreateCourse({ onCreated, onClose }) {
     }
   };
 
+<<<<<<< HEAD
   const submit = async (e) => {
     e.preventDefault();
     if (!form.title || !form.instructor || !form.thumbnail) {
       setError("Please complete all required fields (Title, Instructor, Thumbnail).");
+=======
+  const validateForm = () => {
+    if (
+      !form.title.trim() ||
+      !form.description.trim() ||
+      !form.thumbnail ||
+      !form.instructor
+    ) {
+      return "Title, description, thumbnail, and instructor are required";
+    }
+    if (!form.isFree && form.price <= 0) {
+      return "Price must be greater than 0 for paid courses";
+    }
+    if (form.discountPrice && form.discountPrice > form.price) {
+      return "Discount price cannot exceed actual price";
+    }
+    return "";
+  };
+
+  const submit = async (e) => {
+    e.preventDefault();
+    const validationError = validateForm();
+    if (validationError) {
+      setError(validationError);
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
       return;
     }
 
@@ -81,16 +120,37 @@ export default function CreateCourse({ onCreated, onClose }) {
       });
 
       onCreated(res.data);
+<<<<<<< HEAD
       setSuccess("Success! Course is now live in the database.");
       if (onClose) setTimeout(() => onClose(), 1500);
     } catch {
       setError("Critical: Database sync failed. Please try again.");
+=======
+      setSuccess("Course created successfully!");
+
+      setForm({
+        title: "",
+        description: "",
+        duration: "",
+        price: 0,
+        discountPrice: 0,
+        isFree: false,
+        thumbnail: null,
+        instructor: "",
+      });
+      if (fileInputRef.current) fileInputRef.current.value = "";
+
+      if (onClose) setTimeout(() => onClose(), 1500);
+    } catch {
+      setError("Failed to create course");
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
     } finally {
       setLoading(false);
     }
   };
 
   return (
+<<<<<<< HEAD
     <motion.div 
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       className="fixed inset-0 bg-slate-900/60 backdrop-blur-md flex items-center justify-center px-4 z-[100] overflow-y-auto py-10"
@@ -227,3 +287,158 @@ export default function CreateCourse({ onCreated, onClose }) {
     </motion.div>
   );
 }
+=======
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center px-4 z-50 overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl p-6 relative animate-fadeIn">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-500 hover:text-red-500 transition"
+        >
+          <X className="w-6 h-6" />
+        </button>
+
+        <form onSubmit={submit} className="space-y-6">
+          <h2 className="text-2xl font-bold text-indigo-700 flex items-center gap-2">
+            <BookOpen className="w-6 h-6" /> Create New Course
+          </h2>
+
+          {error && (
+            <div className="flex items-center gap-2 text-red-600 bg-red-100 p-3 rounded-lg">
+              <AlertCircle className="w-5 h-5" /> {error}
+            </div>
+          )}
+          {success && (
+            <div className="flex items-center gap-2 text-green-600 bg-green-100 p-3 rounded-lg">
+              <CheckCircle2 className="w-5 h-5" /> {success}
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex items-center gap-2 border rounded-lg px-3 py-2">
+              <BookOpen className="w-5 h-5 text-indigo-500" />
+              <input
+                name="title"
+                placeholder="Course Title"
+                value={form.title}
+                onChange={handleChange}
+                className="w-full outline-none"
+              />
+            </div>
+
+            <div className="flex items-center gap-2 border rounded-lg px-3 py-2">
+              <User className="w-5 h-5 text-indigo-500" />
+              <select
+                name="instructor"
+                value={form.instructor}
+                onChange={handleChange}
+                className="w-full outline-none bg-transparent"
+              >
+                <option value="">Select Instructor</option>
+                {instructors.map((inst) => (
+                  <option key={inst._id} value={inst._id}>
+                    {inst.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex items-start gap-2 border rounded-lg px-3 py-2 md:col-span-2">
+              <FileText className="w-5 h-5 text-indigo-500 mt-1" />
+              <textarea
+                name="description"
+                placeholder="Course Description"
+                value={form.description}
+                onChange={handleChange}
+                className="w-full outline-none resize-none"
+                rows={3}
+              />
+            </div>
+
+            <div className="flex items-center gap-2 border rounded-lg px-3 py-2">
+              <Clock className="w-5 h-5 text-indigo-500" />
+              <input
+                name="duration"
+                placeholder="Duration (e.g., 10 hours)"
+                value={form.duration}
+                onChange={handleChange}
+                className="w-full outline-none"
+              />
+            </div>
+
+            <div className="flex items-center gap-2 border rounded-lg px-3 py-2">
+              <DollarSign className="w-5 h-5 text-green-600" />
+              <input
+                name="price"
+                type="number"
+                placeholder="Price"
+                value={form.price}
+                onChange={handleChange}
+                className="w-full outline-none"
+                disabled={form.isFree}
+              />
+            </div>
+
+            <div className="flex items-center gap-2 border rounded-lg px-3 py-2">
+              <Tag className="w-5 h-5 text-pink-500" />
+              <input
+                name="discountPrice"
+                type="number"
+                placeholder="Discount Price"
+                value={form.discountPrice}
+                onChange={handleChange}
+                className="w-full outline-none"
+                disabled={form.isFree}
+              />
+            </div>
+
+            <label className="flex items-center gap-2 border rounded-lg px-3 py-2 cursor-pointer select-none">
+              <input
+                name="isFree"
+                type="checkbox"
+                checked={form.isFree}
+                onChange={handleChange}
+              />
+              Free Course
+            </label>
+
+            <div className="flex flex-col gap-2 border rounded-lg px-3 py-2 md:col-span-2">
+              <div className="flex items-center gap-2">
+                <ImageIcon className="w-5 h-5 text-indigo-500" />
+                <input
+                  ref={fileInputRef}
+                  name="thumbnail"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleChange}
+                  className="w-full"
+                />
+              </div>
+              {form.thumbnail && (
+                <img
+                  src={URL.createObjectURL(form.thumbnail)}
+                  alt="Thumbnail Preview"
+                  className="w-32 h-20 object-cover rounded-lg border"
+                />
+              )}
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full flex items-center justify-center gap-2 bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition disabled:opacity-50"
+          >
+            {loading ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" /> Creating...
+              </>
+            ) : (
+              "Create Course"
+            )}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+>>>>>>> 35975c69493032751758ba9568584d2f16146318

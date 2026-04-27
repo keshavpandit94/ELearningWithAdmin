@@ -1,5 +1,8 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+<<<<<<< HEAD
 import { AnimatePresence } from "framer-motion";
+=======
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
 import Home from "./pages/Home";
 import Login from "./pages/User/Login";
 import Signup from "./pages/User/Signup";
@@ -25,6 +28,7 @@ function App() {
   const token = localStorage.getItem("token");
   const location = useLocation();
 
+<<<<<<< HEAD
   // 1. Logic to hide Navbar/Footer for the specialized Player experience
   const isPlayerPage = location.pathname.startsWith("/continue/");
 
@@ -83,3 +87,49 @@ function App() {
 }
 
 export default AppWrapper;
+=======
+  // Define pages for full footer
+  const fullFooterPaths = ["/", "/about-us"];
+
+  // Check if current path requires full footer
+  const showFullFooter = fullFooterPaths.includes(location.pathname);
+
+  return (
+    <>
+      <Navbar />
+      <div className="container mx-auto p-4">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/courses" element={<Courses />} />
+          <Route path="/courses/:id" element={<CourseDetails />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/continue/:courseId" element={<CoursePlayer token={token} />} />
+          <Route path="/about-us" element={<About />} />
+
+          {/* Protected Routes */}
+          <Route
+            path="/my-courses"
+            element={
+              <ProtectedRoute>
+                <MyCourses />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </div>
+
+      {/* Conditional Footer */}
+      {showFullFooter ? <Footer isLoggedIn={!!token} /> : (
+        <footer className="bg-gray-100 text-center py-4 text-gray-600 text-sm">
+          © {new Date().getFullYear()} E-Learning Platform. All Rights Reserved.
+        </footer>
+      )}
+
+    </>
+  );
+}
+
+export default AppWrapper;
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
