@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { Menu, Search, Bell, Settings, ChevronDown, UserCircle, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -36,7 +35,7 @@ export default function Navbar({ onToggleSidebar, title }) {
             className="w-full pl-12 pr-4 py-2.5 bg-slate-100 border border-transparent rounded-2xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all text-sm font-medium"
           />
           <kbd className="absolute right-4 top-1/2 -translate-y-1/2 bg-white border border-slate-200 px-1.5 py-0.5 rounded text-[10px] font-bold text-slate-400 shadow-sm">
-            ⌘ K
+            &nbsp;⌘ K&nbsp;
           </kbd>
         </div>
 
@@ -80,29 +79,3 @@ export default function Navbar({ onToggleSidebar, title }) {
     </header>
   );
 }
-=======
-import { Menu } from "lucide-react";
-
-export default function Navbar({ onToggleSidebar, title }) {
-  return (
-    <header className="sticky top-0 z-30 bg-gradient-to-br from-indigo-50 via-white to-blue-50 shadow-sm flex items-center justify-between px-4 py-3">
-      {/* Left: Toggle (only visible on mobile) */}
-      <button
-        onClick={onToggleSidebar}
-        className="lg:hidden p-2 rounded-md hover:bg-gray-100"
-      >
-        <Menu className="w-6 h-6 text-gray-700" />
-      </button>
-
-      {/* Page Title */}
-      <h1 className="text-lg font-semibold text-gray-800">{title}</h1>
-
-      {/* Right: Placeholder for future actions (profile, notifications, etc.) */}
-      <div className="flex items-center gap-3">
-        {/* Example */}
-        <span className="text-sm text-gray-500">Admin</span>
-      </div>
-    </header>
-  );
-}
->>>>>>> 35975c69493032751758ba9568584d2f16146318

@@ -1,9 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-<<<<<<< HEAD
 import { motion, AnimatePresence } from "framer-motion";
-=======
->>>>>>> 35975c69493032751758ba9568584d2f16146318
 import BACK_URL, { ADMIN_TOKEN } from "../api";
 import {
   Upload,
@@ -13,13 +10,10 @@ import {
   Video,
   PlayCircle,
   AlertCircle,
-<<<<<<< HEAD
   Film,
   CloudUpload,
   ChevronRight,
   CheckCircle2
-=======
->>>>>>> 35975c69493032751758ba9568584d2f16146318
 } from "lucide-react";
 
 export default function EditVideos({ courseId, onClose, onVideosUpdated }) {
@@ -30,26 +24,20 @@ export default function EditVideos({ courseId, onClose, onVideosUpdated }) {
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
 
+  // Fetch current videos
   useEffect(() => {
     axios
       .get(`${BACK_URL}/api/admin/courses/${courseId}`, {
         headers: { "x-admin-token": ADMIN_TOKEN },
       })
       .then((res) => setVideos(res.data.videos || []))
-<<<<<<< HEAD
       .catch(() => setError("System Error: Failed to fetch curriculum."));
-=======
-      .catch(() => setError("Failed to load videos"));
->>>>>>> 35975c69493032751758ba9568584d2f16146318
   }, [courseId]);
 
+  // Upload Logic
   const uploadVideo = async () => {
     if (!newTitle.trim() || !newFile) {
-<<<<<<< HEAD
       setError("Asset requirements missing (Title & File).");
-=======
-      setError("Title and video file are required");
->>>>>>> 35975c69493032751758ba9568584d2f16146318
       return;
     }
     setLoading(true);
@@ -78,6 +66,7 @@ export default function EditVideos({ courseId, onClose, onVideosUpdated }) {
         }
       );
 
+      // Refresh list after upload
       const res = await axios.get(`${BACK_URL}/api/admin/courses/${courseId}`, {
         headers: { "x-admin-token": ADMIN_TOKEN },
       });
@@ -87,22 +76,15 @@ export default function EditVideos({ courseId, onClose, onVideosUpdated }) {
       setProgress(0);
       onVideosUpdated();
     } catch {
-<<<<<<< HEAD
       setError("Critical: Upload stream interrupted.");
-=======
-      setError("Failed to upload video");
->>>>>>> 35975c69493032751758ba9568584d2f16146318
     } finally {
       setLoading(false);
     }
   };
 
+  // Delete Logic
   const deleteVideo = async (videoId) => {
-<<<<<<< HEAD
     if (!window.confirm("Permanent Action: Remove this video from curriculum?")) return;
-=======
-    if (!window.confirm("Delete this video?")) return;
->>>>>>> 35975c69493032751758ba9568584d2f16146318
     try {
       await axios.delete(
         `${BACK_URL}/api/admin/courses/${courseId}/videos/${videoId}`,
@@ -110,16 +92,11 @@ export default function EditVideos({ courseId, onClose, onVideosUpdated }) {
       );
       setVideos((prev) => prev.filter((v) => v._id !== videoId));
     } catch {
-<<<<<<< HEAD
       setError("Deletion failed. Sync with database lost.");
-=======
-      setError("Failed to delete video");
->>>>>>> 35975c69493032751758ba9568584d2f16146318
     }
   };
 
   return (
-<<<<<<< HEAD
     <motion.div 
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       className="fixed inset-0 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 z-[110] overflow-y-auto"
@@ -260,118 +237,9 @@ export default function EditVideos({ courseId, onClose, onVideosUpdated }) {
                 <CheckCircle2 size={14} className="text-emerald-500" />
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Database Synced</span>
             </div>
-            <button onClick={onClose} className="text-xs font-bold text-slate-900 hover:underline">Return to Dashboard</button>
+            <button onClick={onClose} className="text-xs font-bold text-slate-900 hover:underline transition-all">Return to Dashboard</button>
         </div>
       </motion.div>
     </motion.div>
   );
 }
-=======
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto">
-      <div className="bg-white rounded-2xl shadow-lg w-full max-w-2xl p-6 relative">
-        {/* Close button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-red-500 transition"
-        >
-          <X className="w-6 h-6" />
-        </button>
-
-        <h2 className="text-2xl font-bold flex items-center mb-6 text-indigo-700">
-          <Video className="w-6 h-6 mr-2" />
-          Edit Videos
-        </h2>
-
-        {/* Error message */}
-        {error && (
-          <div className="flex items-center gap-2 text-red-600 mb-4 bg-red-100 p-2 rounded-lg">
-            <AlertCircle className="w-5 h-5" />
-            {error}
-          </div>
-        )}
-
-        {/* Upload Form */}
-        <div className="space-y-4 mb-6">
-          {/* Title input */}
-          <input
-            placeholder="Video Title"
-            value={newTitle}
-            onChange={(e) => setNewTitle(e.target.value)}
-            className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none"
-          />
-
-          {/* File input */}
-          <input
-            type="file"
-            accept="video/*"
-            onChange={(e) => setNewFile(e.target.files[0])}
-            className="w-full border rounded-lg px-3 py-2 file:mr-3 file:py-2 file:px-3 
-                       file:rounded-lg file:border-0 file:bg-indigo-600 file:text-white 
-                       hover:file:bg-indigo-700"
-          />
-
-          {/* Upload button */}
-          <button
-            onClick={uploadVideo}
-            disabled={loading}
-            className="w-full flex items-center justify-center px-4 py-2 bg-indigo-600 
-                       text-white rounded-lg hover:bg-indigo-700 transition disabled:opacity-50"
-          >
-            {loading ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
-            ) : (
-              <Upload className="w-5 h-5 mr-2" />
-            )}
-            {loading ? "Uploading..." : "Upload"}
-          </button>
-
-          {/* Upload Progress Bar */}
-          {loading && progress > 0 && (
-            <div className="w-full bg-gray-200 rounded-lg h-3 overflow-hidden relative">
-              <div
-                className="bg-indigo-600 h-3 transition-all duration-200"
-                style={{ width: `${progress}%` }}
-              ></div>
-              <span className="absolute inset-0 flex items-center justify-center text-xs font-semibold text-white">
-                {progress}%
-              </span>
-            </div>
-          )}
-        </div>
-
-        {/* Videos List */}
-        <ul className="space-y-4 max-h-60 overflow-y-auto">
-          {videos.length === 0 ? (
-            <p className="text-gray-500 text-center">No videos uploaded yet.</p>
-          ) : (
-            videos.map((video) => (
-              <li
-                key={video._id}
-                className="flex items-center justify-between bg-gray-50 p-3 rounded-lg shadow-sm"
-              >
-                <div className="flex items-center gap-3">
-                  <PlayCircle className="w-6 h-6 text-indigo-600" />
-                  <a
-                    href={video.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-indigo-700 font-medium hover:underline"
-                  >
-                    {video.title}
-                  </a>
-                </div>
-                <button
-                  onClick={() => deleteVideo(video._id)}
-                  className="text-red-500 hover:text-red-700 transition"
-                >
-                  <Trash2 className="w-5 h-5" />
-                </button>
-              </li>
-            ))
-          )}
-        </ul>
-      </div>
-    </div>
-  );
-}
->>>>>>> 35975c69493032751758ba9568584d2f16146318

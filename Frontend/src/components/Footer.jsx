@@ -4,7 +4,6 @@ import {
   Linkedin,
   Instagram,
   Mail,
-<<<<<<< HEAD
   Phone,
   ArrowUpRight,
   GraduationCap
@@ -35,14 +34,16 @@ export default function Footer({ isLoggedIn }) {
             </p>
             <div className="flex gap-4">
               {[
-                { Icon: Facebook, href: "#" },
-                { Icon: Twitter, href: "#" },
-                { Icon: Linkedin, href: "#" },
-                { Icon: Instagram, href: "#" }
+                { Icon: Facebook, href: "https://facebook.com" },
+                { Icon: Twitter, href: "https://twitter.com" },
+                { Icon: Linkedin, href: "https://linkedin.com" },
+                { Icon: Instagram, href: "https://instagram.com" }
               ].map(({ Icon, href }, idx) => (
                 <motion.a
                   key={idx}
                   href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   whileHover={{ y: -3, textShadow: "0 0 8px rgb(255,255,255)" }}
                   className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-600 hover:text-white transition-all shadow-sm"
                 >
@@ -57,10 +58,10 @@ export default function Footer({ isLoggedIn }) {
             <h3 className="text-white font-bold mb-6 tracking-tight">Platform</h3>
             <ul className="space-y-4 text-sm">
               {[
+                { name: "Home", href: "/" },
                 { name: "Browse Courses", href: "/courses" },
-                { name: "Mentors", href: "/instructors" },
-                { name: "About Story", href: "/about" },
-                { name: "Contact Support", href: "/contact" }
+                { name: "About Us", href: "/about" },
+                { name: "Contact Support", href: "/about-us" }
               ].map((link) => (
                 <li key={link.name}>
                   <a href={link.href} className="group flex items-center gap-1 hover:text-white transition-colors">
@@ -72,13 +73,13 @@ export default function Footer({ isLoggedIn }) {
             </ul>
           </div>
 
-          {/* Account/Auth */}
+          {/* Account/Auth Logic */}
           <div>
             <h3 className="text-white font-bold mb-6 tracking-tight">Account</h3>
             <ul className="space-y-4 text-sm">
               {isLoggedIn ? (
                 <>
-                  <li><a href="/dashboard" className="hover:text-white transition-colors">My Learning</a></li>
+                  <li><a href="/my-courses" className="hover:text-white transition-colors">My Learning</a></li>
                   <li><a href="/profile" className="hover:text-white transition-colors">Settings</a></li>
                 </>
               ) : (
@@ -87,11 +88,11 @@ export default function Footer({ isLoggedIn }) {
                   <li><a href="/signup" className="hover:text-white transition-colors">Create Account</a></li>
                 </>
               )}
-              <li><a href="/terms" className="hover:text-white transition-colors">Privacy Policy</a></li>
+              <li><a href="/privacy" className="hover:text-white transition-colors">Privacy Policy</a></li>
             </ul>
           </div>
 
-          {/* Contact Information */}
+          {/* Contact Information Card */}
           <div className="bg-slate-900/50 p-6 rounded-[2rem] border border-slate-800">
             <h3 className="text-white font-bold mb-6 tracking-tight">Get in Touch</h3>
             <div className="space-y-4 text-sm">
@@ -101,12 +102,12 @@ export default function Footer({ isLoggedIn }) {
                 </div>
                 support@elearning.com
               </a>
-              <div className="flex items-center gap-3">
+              <a href="tel:+1234567890" className="flex items-center gap-3 hover:text-blue-400 transition-colors">
                 <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center">
                   <Phone size={14} />
                 </div>
                 +1 (234) 567-890
-              </div>
+              </a>
             </div>
           </div>
 
@@ -125,83 +126,3 @@ export default function Footer({ isLoggedIn }) {
     </footer>
   );
 }
-=======
-  Phone
-} from "lucide-react";
-
-export default function Footer({ isLoggedIn }) {
-  return (
-    <footer className="bg-gray-900 text-gray-300 py-12 px-6">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
-
-        {/* About */}
-        <div>
-          <h3 className="text-white text-lg font-semibold mb-4">About Us</h3>
-          <p className="text-sm leading-relaxed">
-            E-Learning Platform is dedicated to providing quality online education accessible anytime, anywhere. Join thousands of learners achieving their goals with us.
-          </p>
-        </div>
-
-        {/* Quick Links */}
-        <div>
-          <h3 className="text-white text-lg font-semibold mb-4">Quick Links</h3>
-          <ul className="space-y-2">
-            <li><a href="/" className="hover:text-white transition">Home</a></li>
-            <li><a href="/courses" className="hover:text-white transition">Courses</a></li>
-            <li><a href="/about" className="hover:text-white transition">About</a></li>
-            <li><a href="/about-us" className="hover:text-white transition">Contact</a></li>
-            {!isLoggedIn && (
-              <>
-                <li><a href="/login" className="hover:text-white transition">Login</a></li>
-                <li><a href="/signup" className="hover:text-white transition">Sign Up</a></li>
-              </>
-            )}
-          </ul>
-        </div>
-
-        {/* Contact */}
-        <div>
-          <h3 className="text-white text-lg font-semibold mb-4">Contact Us</h3>
-          <ul className="space-y-3 text-sm">
-            <li className="flex items-center gap-2">
-              <Mail className="w-4 h-4" />
-              <a href="mailto:support@elearning.com" className="hover:text-white transition">
-                support@elearning.com
-              </a>
-            </li>
-            <li className="flex items-center gap-2">
-              <Phone className="w-4 h-4" />
-              <a href="tel:+1234567890" className="hover:text-white transition">
-                +1 (234) 567-890
-              </a>
-            </li>
-          </ul>
-        </div>
-
-        {/* Social Media */}
-        <div>
-          <h3 className="text-white text-lg font-semibold mb-4">Follow Us</h3>
-          <div className="flex gap-4 text-gray-400">
-            <a href="https://facebook.com" aria-label="Facebook" className="hover:text-white transition">
-              <Facebook className="w-6 h-6" />
-            </a>
-            <a href="https://twitter.com" aria-label="Twitter" className="hover:text-white transition">
-              <Twitter className="w-6 h-6" />
-            </a>
-            <a href="https://linkedin.com" aria-label="LinkedIn" className="hover:text-white transition">
-              <Linkedin className="w-6 h-6" />
-            </a>
-            <a href="https://instagram.com" aria-label="Instagram" className="hover:text-white transition">
-              <Instagram className="w-6 h-6" />
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-12 text-center text-xs text-gray-500">
-        © {new Date().getFullYear()} E-Learning Platform. All Rights Reserved.
-      </div>
-    </footer>
-  );
-}
->>>>>>> 35975c69493032751758ba9568584d2f16146318
