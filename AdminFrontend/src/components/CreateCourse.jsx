@@ -1,20 +1,46 @@
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
 import { motion, AnimatePresence } from "framer-motion";
 import BACK_URL, { ADMIN_TOKEN } from "../api";
 import {
   BookOpen,
+<<<<<<< HEAD
+=======
+  PlusCircle,
+=======
+import BACK_URL, { ADMIN_TOKEN } from "../api";
+import {
+  BookOpen,
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
   FileText,
   Clock,
   DollarSign,
   Tag,
+<<<<<<< HEAD
+=======
+  Image as ImageIcon,
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
   Loader2,
   AlertCircle,
   CheckCircle2,
   X,
   User,
+<<<<<<< HEAD
   Sparkles,
   UploadCloud,
+=======
+<<<<<<< HEAD
+  Sparkles,
+  UploadCloud,
+  ChevronRight
+=======
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
 } from "lucide-react";
 
 export default function CreateCourse({ onCreated, onClose }) {
@@ -41,7 +67,15 @@ export default function CreateCourse({ onCreated, onClose }) {
         headers: { "x-admin-token": ADMIN_TOKEN },
       })
       .then((res) => setInstructors(res.data || []))
+<<<<<<< HEAD
       .catch(() => setError("System Error: Failed to load faculty records."));
+=======
+<<<<<<< HEAD
+      .catch(() => setError("System Error: Failed to load faculty records."));
+=======
+      .catch(() => setError("Failed to load instructors"));
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
   }, []);
 
   const handleChange = (e) => {
@@ -55,6 +89,15 @@ export default function CreateCourse({ onCreated, onClose }) {
     }
   };
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+  const submit = async (e) => {
+    e.preventDefault();
+    if (!form.title || !form.instructor || !form.thumbnail) {
+      setError("Please complete all required fields (Title, Instructor, Thumbnail).");
+=======
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
   const validateForm = () => {
     if (
       !form.title.trim() ||
@@ -67,7 +110,11 @@ export default function CreateCourse({ onCreated, onClose }) {
     if (!form.isFree && form.price <= 0) {
       return "Price must be greater than 0 for paid courses";
     }
+<<<<<<< HEAD
     if (!form.isFree && form.discountPrice && Number(form.discountPrice) > Number(form.price)) {
+=======
+    if (form.discountPrice && form.discountPrice > form.price) {
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
       return "Discount price cannot exceed actual price";
     }
     return "";
@@ -78,6 +125,10 @@ export default function CreateCourse({ onCreated, onClose }) {
     const validationError = validateForm();
     if (validationError) {
       setError(validationError);
+<<<<<<< HEAD
+=======
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
       return;
     }
 
@@ -87,10 +138,14 @@ export default function CreateCourse({ onCreated, onClose }) {
 
     try {
       const formData = new FormData();
+<<<<<<< HEAD
       Object.keys(form).forEach((key) => {
         // Handle boolean and file types correctly for FormData
         formData.append(key, form[key]);
       });
+=======
+      Object.keys(form).forEach((key) => formData.append(key, form[key]));
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
 
       const res = await axios.post(`${BACK_URL}/api/admin/courses`, formData, {
         headers: {
@@ -100,9 +155,20 @@ export default function CreateCourse({ onCreated, onClose }) {
       });
 
       onCreated(res.data);
+<<<<<<< HEAD
       setSuccess("Success! Course is now live in the database.");
 
       // Clear form
+=======
+<<<<<<< HEAD
+      setSuccess("Success! Course is now live in the database.");
+      if (onClose) setTimeout(() => onClose(), 1500);
+    } catch {
+      setError("Critical: Database sync failed. Please try again.");
+=======
+      setSuccess("Course created successfully!");
+
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
       setForm({
         title: "",
         description: "",
@@ -116,14 +182,24 @@ export default function CreateCourse({ onCreated, onClose }) {
       if (fileInputRef.current) fileInputRef.current.value = "";
 
       if (onClose) setTimeout(() => onClose(), 1500);
+<<<<<<< HEAD
     } catch (err) {
       setError(err.response?.data?.message || "Critical: Database sync failed.");
+=======
+    } catch {
+      setError("Failed to create course");
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
     } finally {
       setLoading(false);
     }
   };
 
   return (
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
     <motion.div 
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       className="fixed inset-0 bg-slate-900/60 backdrop-blur-md flex items-center justify-center px-4 z-[100] overflow-y-auto py-10"
@@ -132,6 +208,10 @@ export default function CreateCourse({ onCreated, onClose }) {
         initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 20 }}
         className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-4xl p-8 md:p-12 relative border border-white"
       >
+<<<<<<< HEAD
+=======
+        {/* Close Button */}
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
         <button 
           onClick={onClose} 
           className="absolute top-8 right-8 p-2 rounded-full hover:bg-slate-100 transition-colors text-slate-400 hover:text-rose-500"
@@ -140,6 +220,10 @@ export default function CreateCourse({ onCreated, onClose }) {
         </button>
 
         <form onSubmit={submit} className="space-y-8">
+<<<<<<< HEAD
+=======
+          {/* Header */}
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
           <header>
             <div className="flex items-center gap-2 text-blue-600 mb-2">
               <Sparkles size={18} />
@@ -162,6 +246,11 @@ export default function CreateCourse({ onCreated, onClose }) {
           </AnimatePresence>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+<<<<<<< HEAD
+=======
+            
+            {/* Left Column: Basic Info */}
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
             <div className="space-y-6">
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Program Title</label>
@@ -188,6 +277,10 @@ export default function CreateCourse({ onCreated, onClose }) {
               </div>
             </div>
 
+<<<<<<< HEAD
+=======
+            {/* Right Column: Pricing & Media */}
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
             <div className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -216,6 +309,7 @@ export default function CreateCourse({ onCreated, onClose }) {
                 <input name="isFree" type="checkbox" checked={form.isFree} onChange={handleChange} className="w-5 h-5 accent-blue-600 cursor-pointer" />
               </div>
 
+<<<<<<< HEAD
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Duration</label>
                 <div className="relative group">
@@ -224,6 +318,9 @@ export default function CreateCourse({ onCreated, onClose }) {
                 </div>
               </div>
 
+=======
+              {/* Thumbnail Dropzone */}
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Cover Artwork</label>
                 <div 
@@ -231,7 +328,11 @@ export default function CreateCourse({ onCreated, onClose }) {
                   className="group relative h-40 border-2 border-dashed border-slate-200 rounded-[2rem] bg-slate-50 flex flex-col items-center justify-center cursor-pointer hover:bg-blue-50 hover:border-blue-200 transition-all overflow-hidden"
                 >
                   {form.thumbnail ? (
+<<<<<<< HEAD
                     <img src={URL.createObjectURL(form.thumbnail)} className="absolute inset-0 w-full h-full object-cover" alt="Preview" />
+=======
+                    <img src={URL.createObjectURL(form.thumbnail)} className="absolute inset-0 w-full h-full object-cover" />
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
                   ) : (
                     <>
                       <UploadCloud className="text-slate-300 group-hover:text-blue-500 mb-2 transition-colors" size={32} />
@@ -244,6 +345,10 @@ export default function CreateCourse({ onCreated, onClose }) {
             </div>
           </div>
 
+<<<<<<< HEAD
+=======
+          {/* Action Footer */}
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
           <div className="pt-6 border-t border-slate-100 flex flex-col md:flex-row gap-4">
              <button
                 type="submit"
@@ -260,4 +365,163 @@ export default function CreateCourse({ onCreated, onClose }) {
       </motion.div>
     </motion.div>
   );
+<<<<<<< HEAD
 }
+=======
+}
+=======
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center px-4 z-50 overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl p-6 relative animate-fadeIn">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-500 hover:text-red-500 transition"
+        >
+          <X className="w-6 h-6" />
+        </button>
+
+        <form onSubmit={submit} className="space-y-6">
+          <h2 className="text-2xl font-bold text-indigo-700 flex items-center gap-2">
+            <BookOpen className="w-6 h-6" /> Create New Course
+          </h2>
+
+          {error && (
+            <div className="flex items-center gap-2 text-red-600 bg-red-100 p-3 rounded-lg">
+              <AlertCircle className="w-5 h-5" /> {error}
+            </div>
+          )}
+          {success && (
+            <div className="flex items-center gap-2 text-green-600 bg-green-100 p-3 rounded-lg">
+              <CheckCircle2 className="w-5 h-5" /> {success}
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex items-center gap-2 border rounded-lg px-3 py-2">
+              <BookOpen className="w-5 h-5 text-indigo-500" />
+              <input
+                name="title"
+                placeholder="Course Title"
+                value={form.title}
+                onChange={handleChange}
+                className="w-full outline-none"
+              />
+            </div>
+
+            <div className="flex items-center gap-2 border rounded-lg px-3 py-2">
+              <User className="w-5 h-5 text-indigo-500" />
+              <select
+                name="instructor"
+                value={form.instructor}
+                onChange={handleChange}
+                className="w-full outline-none bg-transparent"
+              >
+                <option value="">Select Instructor</option>
+                {instructors.map((inst) => (
+                  <option key={inst._id} value={inst._id}>
+                    {inst.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex items-start gap-2 border rounded-lg px-3 py-2 md:col-span-2">
+              <FileText className="w-5 h-5 text-indigo-500 mt-1" />
+              <textarea
+                name="description"
+                placeholder="Course Description"
+                value={form.description}
+                onChange={handleChange}
+                className="w-full outline-none resize-none"
+                rows={3}
+              />
+            </div>
+
+            <div className="flex items-center gap-2 border rounded-lg px-3 py-2">
+              <Clock className="w-5 h-5 text-indigo-500" />
+              <input
+                name="duration"
+                placeholder="Duration (e.g., 10 hours)"
+                value={form.duration}
+                onChange={handleChange}
+                className="w-full outline-none"
+              />
+            </div>
+
+            <div className="flex items-center gap-2 border rounded-lg px-3 py-2">
+              <DollarSign className="w-5 h-5 text-green-600" />
+              <input
+                name="price"
+                type="number"
+                placeholder="Price"
+                value={form.price}
+                onChange={handleChange}
+                className="w-full outline-none"
+                disabled={form.isFree}
+              />
+            </div>
+
+            <div className="flex items-center gap-2 border rounded-lg px-3 py-2">
+              <Tag className="w-5 h-5 text-pink-500" />
+              <input
+                name="discountPrice"
+                type="number"
+                placeholder="Discount Price"
+                value={form.discountPrice}
+                onChange={handleChange}
+                className="w-full outline-none"
+                disabled={form.isFree}
+              />
+            </div>
+
+            <label className="flex items-center gap-2 border rounded-lg px-3 py-2 cursor-pointer select-none">
+              <input
+                name="isFree"
+                type="checkbox"
+                checked={form.isFree}
+                onChange={handleChange}
+              />
+              Free Course
+            </label>
+
+            <div className="flex flex-col gap-2 border rounded-lg px-3 py-2 md:col-span-2">
+              <div className="flex items-center gap-2">
+                <ImageIcon className="w-5 h-5 text-indigo-500" />
+                <input
+                  ref={fileInputRef}
+                  name="thumbnail"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleChange}
+                  className="w-full"
+                />
+              </div>
+              {form.thumbnail && (
+                <img
+                  src={URL.createObjectURL(form.thumbnail)}
+                  alt="Thumbnail Preview"
+                  className="w-32 h-20 object-cover rounded-lg border"
+                />
+              )}
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full flex items-center justify-center gap-2 bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition disabled:opacity-50"
+          >
+            {loading ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" /> Creating...
+              </>
+            ) : (
+              "Create Course"
+            )}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949

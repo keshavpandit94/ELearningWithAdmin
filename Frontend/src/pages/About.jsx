@@ -1,5 +1,12 @@
 import React from "react";
+<<<<<<< HEAD
 import { motion } from "framer-motion";
+=======
+<<<<<<< HEAD
+import { motion } from "framer-motion";
+=======
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
 import {
   Facebook,
   Twitter,
@@ -8,6 +15,10 @@ import {
   Mail,
   Phone,
   MapPin,
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
   Headphones,
   Briefcase,
   Globe,
@@ -19,16 +30,24 @@ const fadeInUp = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
 };
 
+<<<<<<< HEAD
 const ContactCard = ({ icon: Icon, title, subtitle, color, links }) => (
   <motion.div 
     whileHover={{ y: -10 }}
     className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-[0_10px_30px_-15px_rgba(0,0,0,0.05)] flex flex-col items-center text-center group transition-all hover:shadow-[0_20px_40px_-15px_rgba(59,130,246,0.1)]"
+=======
+const ContactCard = ({ icon: Icon, title, subtitle, color, link, linkText }) => (
+  <motion.div 
+    whileHover={{ y: -10 }}
+    className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-[0_10px_30px_-15px_rgba(0,0,0,0.05)] flex flex-col items-center text-center group transition-all hover:shadow-[0_20px_40px_-15px_rgba(59,130,246,0.1)]"
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
   >
     <div className={`w-16 h-16 rounded-2xl ${color} flex items-center justify-center mb-6 shadow-inner transform group-hover:rotate-6 transition-transform`}>
       <Icon size={28} />
     </div>
     <h3 className="text-xl font-black text-slate-900 mb-2 tracking-tight">{title}</h3>
     <p className="text-slate-500 text-sm mb-6 leading-relaxed">{subtitle}</p>
+<<<<<<< HEAD
     <div className="space-y-2">
       {links.map((link, idx) => (
         <a 
@@ -40,6 +59,14 @@ const ContactCard = ({ icon: Icon, title, subtitle, color, links }) => (
         </a>
       ))}
     </div>
+=======
+    <a 
+      href={link} 
+      className="text-blue-600 font-bold text-sm hover:underline flex items-center gap-2"
+    >
+      {linkText}
+    </a>
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
   </motion.div>
 );
 
@@ -73,30 +100,45 @@ export default function About() {
             title="Customer Support"
             subtitle="Need help with a course or your account? Our team is available 24/7."
             color="bg-blue-50 text-blue-600"
+<<<<<<< HEAD
             links={[
               { text: "support@elearning.com", href: "mailto:support@elearning.com" },
               { text: "+1 (234) 567-890", href: "tel:+1234567890" }
             ]}
+=======
+            link="mailto:support@elearning.com"
+            linkText="support@elearning.com"
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
           />
           <ContactCard 
             icon={Briefcase}
             title="Sales Inquiries"
             subtitle="Interested in bulk licenses or custom training for your company?"
             color="bg-indigo-50 text-indigo-600"
+<<<<<<< HEAD
             links={[
               { text: "sales@elearning.com", href: "mailto:sales@elearning.com" },
               { text: "+1 (987) 654-321", href: "tel:+1987654321" }
             ]}
+=======
+            link="mailto:sales@elearning.com"
+            linkText="sales@elearning.com"
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
           />
           <ContactCard 
             icon={Globe}
             title="General Inquiries"
             subtitle="Everything else from media requests to simple hellos."
             color="bg-emerald-50 text-emerald-600"
+<<<<<<< HEAD
             links={[
               { text: "info@elearning.com", href: "mailto:info@elearning.com" },
               { text: "+1 (123) 456-7890", href: "tel:+11234567890" }
             ]}
+=======
+            link="mailto:info@elearning.com"
+            linkText="info@elearning.com"
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
           />
         </div>
 
@@ -129,18 +171,29 @@ export default function About() {
             
             <div className="flex flex-wrap gap-4">
               {[
+<<<<<<< HEAD
                 { icon: Facebook, color: "hover:bg-blue-600", label: "Facebook", href: "https://facebook.com/elearning" },
                 { icon: Twitter, color: "hover:bg-sky-500", label: "Twitter", href: "https://twitter.com/elearning" },
                 { icon: Linkedin, color: "hover:bg-blue-700", label: "LinkedIn", href: "https://linkedin.com/company/elearning" },
                 { icon: Instagram, color: "hover:bg-pink-500", label: "Instagram", href: "https://instagram.com/elearning" }
+=======
+                { icon: Facebook, color: "hover:bg-blue-600", label: "Facebook" },
+                { icon: Twitter, color: "hover:bg-sky-500", label: "Twitter" },
+                { icon: Linkedin, color: "hover:bg-blue-700", label: "LinkedIn" },
+                { icon: Instagram, color: "hover:bg-pink-500", label: "Instagram" }
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
               ].map((social, i) => (
                 <motion.a
                   key={i}
                   whileHover={{ scale: 1.1, y: -5 }}
                   whileTap={{ scale: 0.9 }}
+<<<<<<< HEAD
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
+=======
+                  href="#"
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
                   className={`w-14 h-14 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-400 transition-all hover:text-white ${social.color} shadow-sm`}
                   aria-label={social.label}
                 >
@@ -149,8 +202,190 @@ export default function About() {
               ))}
             </div>
           </div>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
         </div>
       </div>
     </div>
   );
+<<<<<<< HEAD
 }
+=======
+}
+=======
+} from "lucide-react";
+
+export default function About() {
+  return (
+    <div className="max-w-6xl mx-auto py-16 px-6 sm:px-8 lg:px-12 bg-white rounded-2xl shadow-xl">
+      <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-12 text-center border-b pb-6">
+        Contact Us
+      </h1>
+
+      {/* Sections */}
+      <div className="space-y-12 text-gray-700 text-base sm:text-lg">
+        {/* Customer Support */}
+        <section>
+          <h2 className="text-2xl font-bold mb-5 flex items-center gap-2 text-blue-700 border-b pb-3">
+            Customer Support
+          </h2>
+          <p>
+            For questions, assistance, or issues with your courses, please reach
+            out to our support team:
+          </p>
+          <ul className="mt-4 space-y-4">
+            <li className="flex items-center gap-3">
+              <span className="p-2 rounded-full bg-blue-100">
+                <Mail className="w-6 h-6 text-blue-600" />
+              </span>
+              <a
+                href="mailto:support@elearning.com"
+                className="text-blue-600 hover:underline"
+              >
+                support@elearning.com
+              </a>
+            </li>
+            <li className="flex items-center gap-3">
+              <span className="p-2 rounded-full bg-green-100">
+                <Phone className="w-6 h-6 text-green-600" />
+              </span>
+              <a
+                href="tel:+1234567890"
+                className="text-green-600 hover:underline"
+              >
+                +1 (234) 567-890
+              </a>
+            </li>
+          </ul>
+        </section>
+
+        {/* Sales Inquiries */}
+        <section>
+          <h2 className="text-2xl font-bold mb-5 flex items-center gap-2 text-blue-700 border-b pb-3">
+            Sales Inquiries
+          </h2>
+          <p>
+            Interested in partnerships, bulk course purchases, or custom
+            training solutions? Contact our sales team:
+          </p>
+          <ul className="mt-4 space-y-4">
+            <li className="flex items-center gap-3">
+              <span className="p-2 rounded-full bg-purple-100">
+                <Mail className="w-6 h-6 text-purple-600" />
+              </span>
+              <a
+                href="mailto:sales@elearning.com"
+                className="text-purple-600 hover:underline"
+              >
+                sales@elearning.com
+              </a>
+            </li>
+            <li className="flex items-center gap-3">
+              <span className="p-2 rounded-full bg-green-100">
+                <Phone className="w-6 h-6 text-green-600" />
+              </span>
+              <a
+                href="tel:+1987654321"
+                className="text-green-600 hover:underline"
+              >
+                +1 (987) 654-321
+              </a>
+            </li>
+          </ul>
+        </section>
+
+        {/* General Inquiries */}
+        <section>
+          <h2 className="text-2xl font-bold mb-5 flex items-center gap-2 text-blue-700 border-b pb-3">
+            General Inquiries
+          </h2>
+          <p>
+            If you want to get in touch for any other reason, feel free to
+            contact us via:
+          </p>
+          <ul className="mt-4 space-y-4">
+            <li className="flex items-center gap-3">
+              <span className="p-2 rounded-full bg-indigo-100">
+                <Mail className="w-6 h-6 text-indigo-600" />
+              </span>
+              <a
+                href="mailto:info@elearning.com"
+                className="text-indigo-600 hover:underline"
+              >
+                info@elearning.com
+              </a>
+            </li>
+            <li className="flex items-center gap-3">
+              <span className="p-2 rounded-full bg-green-100">
+                <Phone className="w-6 h-6 text-green-600" />
+              </span>
+              <a
+                href="tel:+11234567890"
+                className="text-green-600 hover:underline"
+              >
+                +1 (123) 456-7890
+              </a>
+            </li>
+            <li className="flex items-center gap-3">
+              <span className="p-2 rounded-full bg-red-100">
+                <MapPin className="w-6 h-6 text-red-600" />
+              </span>
+              <span>
+                123 Learning St, Knowledge City, Education State, 12345
+              </span>
+            </li>
+          </ul>
+        </section>
+
+        {/* Social Media */}
+        <section className="mt-16 text-center">
+          <h2 className="text-2xl font-bold mb-8 text-blue-700 border-b pb-3">
+            Follow Us
+          </h2>
+          <div className="flex justify-center gap-8 text-3xl sm:text-4xl">
+            <a
+              href="https://facebook.com/elearning"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebook"
+              className="p-3 rounded-full bg-blue-100 hover:bg-blue-200 transition"
+            >
+              <Facebook className="text-blue-600" />
+            </a>
+            <a
+              href="https://twitter.com/elearning"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Twitter"
+              className="p-3 rounded-full bg-sky-100 hover:bg-sky-200 transition"
+            >
+              <Twitter className="text-sky-500" />
+            </a>
+            <a
+              href="https://linkedin.com/company/elearning"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn"
+              className="p-3 rounded-full bg-blue-50 hover:bg-blue-200 transition"
+            >
+              <Linkedin className="text-blue-700" />
+            </a>
+            <a
+              href="https://instagram.com/elearning"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+              className="p-3 rounded-full bg-pink-100 hover:bg-pink-200 transition"
+            >
+              <Instagram className="text-pink-500" />
+            </a>
+          </div>
+        </section>
+      </div>
+    </div>
+  );
+}
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949

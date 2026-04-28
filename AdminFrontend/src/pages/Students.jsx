@@ -1,6 +1,16 @@
 import { useEffect, useState } from "react";
+<<<<<<< HEAD
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
+=======
+<<<<<<< HEAD
+import axios from "axios";
+import { motion, AnimatePresence } from "framer-motion";
+=======
+import BACK_URL, { ADMIN_TOKEN } from "../api";
+import axios from "axios";
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
 import {
   User,
   Mail,
@@ -13,9 +23,17 @@ import {
   PlayCircle,
   PlusCircle,
   X,
+<<<<<<< HEAD
   Loader2,
   AlertCircle,
   ShieldCheck,
+=======
+<<<<<<< HEAD
+  Loader2,
+  AlertCircle,
+  ShieldCheck,
+  Search
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
 } from "lucide-react";
 import BACK_URL, { ADMIN_TOKEN } from "../api";
 
@@ -39,6 +57,30 @@ function Modal({ title, children, onClose }) {
         <div className="p-8">{children}</div>
       </motion.div>
     </motion.div>
+<<<<<<< HEAD
+=======
+=======
+} from "lucide-react";
+
+// ✅ Reusable Modal
+function Modal({ title, children, onClose }) {
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl shadow-lg w-full max-w-md relative overflow-hidden">
+        <div className="flex justify-between items-center border-b px-6 py-3">
+          <h2 className="text-lg font-semibold text-gray-800">{title}</h2>
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-800 transition"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+        <div className="p-6">{children}</div>
+      </div>
+    </div>
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
   );
 }
 
@@ -52,7 +94,11 @@ export default function Students() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
 
+<<<<<<< HEAD
   // Fetch all students
+=======
+<<<<<<< HEAD
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
   const fetchStudents = () => {
     setLoading(true);
     axios.get(`${BACK_URL}/api/admin/users`, {
@@ -65,7 +111,10 @@ export default function Students() {
 
   useEffect(() => { fetchStudents(); }, []);
 
+<<<<<<< HEAD
   // Save Student (Add/Update)
+=======
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
   const handleSave = () => {
     if (!name.trim() || !email.trim()) {
       setError("Identity requirements missing (Name/Email).");
@@ -84,22 +133,35 @@ export default function Students() {
     }).catch(err => setError(err.response?.data?.message || "Sync failed."));
   };
 
+<<<<<<< HEAD
   // Toggle Suspend Status
+=======
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
   const toggleSuspend = (id, currentStatus) => {
     const action = currentStatus === "active" ? "suspend" : "unsuspend";
     axios.post(`${BACK_URL}/api/admin/users/${id}/${action}`, {}, {
       headers: { "x-admin-token": ADMIN_TOKEN },
+<<<<<<< HEAD
     }).then(() => fetchStudents())
     .catch(err => setError("Status update failed."));
   };
 
   // Delete Student
+=======
+    }).then(() => fetchStudents());
+  };
+
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
   const deleteStudent = (id) => {
     if (!window.confirm("Permanent Action: Remove student record?")) return;
     axios.delete(`${BACK_URL}/api/admin/users/${id}`, {
       headers: { "x-admin-token": ADMIN_TOKEN },
+<<<<<<< HEAD
     }).then(() => fetchStudents())
     .catch(err => setError("Deletion failed."));
+=======
+    }).then(() => fetchStudents());
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
   };
 
   const openAddModal = () => {
@@ -133,8 +195,11 @@ export default function Students() {
         </motion.button>
       </header>
 
+<<<<<<< HEAD
       {error && <div className="mb-6 p-4 bg-rose-50 border border-rose-100 rounded-2xl text-rose-600 font-bold text-sm text-center">{error}</div>}
 
+=======
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
       {/* --- DATA VIEW --- */}
       <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.04)] overflow-hidden">
         <div className="overflow-x-auto">
@@ -151,8 +216,11 @@ export default function Students() {
             <tbody className="divide-y divide-slate-50">
               {loading ? (
                 <tr><td colSpan="4" className="p-10 text-center"><Loader2 className="animate-spin inline text-blue-600" /></td></tr>
+<<<<<<< HEAD
               ) : students.length === 0 ? (
                 <tr><td colSpan="4" className="p-10 text-center text-slate-400 italic">No students found in the system.</td></tr>
+=======
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
               ) : (
                 students.map((s, idx) => {
                   const isSuspended = s.suspendUntil && new Date(s.suspendUntil) > new Date();
@@ -180,18 +248,32 @@ export default function Students() {
                       </td>
                       <td className="px-8 py-6">
                         <div className="flex items-center gap-2">
+<<<<<<< HEAD
                           <button onClick={() => setDetailsModal(s)} className="p-2.5 rounded-xl bg-white border border-slate-200 text-slate-400 hover:bg-slate-900 hover:text-white transition-all shadow-sm" title="View Details">
                             <Eye size={16} />
                           </button>
                           <button onClick={() => openEditModal(s)} className="p-2.5 rounded-xl bg-white border border-slate-200 text-slate-400 hover:bg-blue-600 hover:text-white transition-all shadow-sm" title="Edit Student">
+=======
+                          <button onClick={() => setDetailsModal(s)} className="p-2.5 rounded-xl bg-white border border-slate-200 text-slate-400 hover:bg-slate-900 hover:text-white transition-all shadow-sm">
+                            <Eye size={16} />
+                          </button>
+                          <button onClick={() => openEditModal(s)} className="p-2.5 rounded-xl bg-white border border-slate-200 text-slate-400 hover:bg-blue-600 hover:text-white transition-all shadow-sm">
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
                             <Pencil size={16} />
                           </button>
                           <button onClick={() => toggleSuspend(s._id, status)} className={`p-2.5 rounded-xl bg-white border border-slate-200 transition-all shadow-sm ${
                             status === "active" ? "text-amber-500 hover:bg-amber-500 hover:text-white" : "text-emerald-500 hover:bg-emerald-500 hover:text-white"
+<<<<<<< HEAD
                           }`} title={status === "active" ? "Suspend Student" : "Activate Student"}>
                             {status === "active" ? <PauseCircle size={16} /> : <PlayCircle size={16} />}
                           </button>
                           <button onClick={() => deleteStudent(s._id)} className="p-2.5 rounded-xl bg-white border border-slate-200 text-rose-400 hover:bg-rose-600 hover:text-white transition-all shadow-sm" title="Delete Permanent">
+=======
+                          }`}>
+                            {status === "active" ? <PauseCircle size={16} /> : <PlayCircle size={16} />}
+                          </button>
+                          <button onClick={() => deleteStudent(s._id)} className="p-2.5 rounded-xl bg-white border border-slate-200 text-rose-400 hover:bg-rose-600 hover:text-white transition-all shadow-sm">
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
                             <Trash2 size={16} />
                           </button>
                         </div>
@@ -205,10 +287,17 @@ export default function Students() {
         </div>
       </div>
 
+<<<<<<< HEAD
       {/* --- MODALS --- */}
       <AnimatePresence>
         {modalVisible && (
           <Modal title={editingId ? "Update Student" : "New Onboarding"} onClose={closeModal}>
+=======
+      {/* --- FORM MODAL --- */}
+      <AnimatePresence>
+        {modalVisible && (
+          <Modal title={editingId ? "Update Student" : "New Enrollment"} onClose={closeModal}>
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
             <div className="space-y-4">
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Full Name</label>
@@ -216,8 +305,14 @@ export default function Students() {
               </div>
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Email Address</label>
+<<<<<<< HEAD
                 <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="name@example.com" className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium" />
               </div>
+=======
+                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="name@company.com" className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-medium" />
+              </div>
+              {error && <div className="flex items-center gap-2 text-rose-600 text-xs font-bold pl-1"><AlertCircle size={14} />{error}</div>}
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
               <button onClick={handleSave} className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black shadow-xl shadow-slate-200 hover:bg-blue-600 transition-all mt-4">
                 {editingId ? "SAVE CHANGES" : "PROVISION ACCOUNT"}
               </button>
@@ -225,6 +320,10 @@ export default function Students() {
           </Modal>
         )}
 
+<<<<<<< HEAD
+=======
+        {/* --- DETAILS MODAL --- */}
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
         {detailsModal && (
           <Modal title="Student Record" onClose={() => setDetailsModal(null)}>
             <div className="space-y-6">
@@ -235,6 +334,10 @@ export default function Students() {
                     <p className="text-sm font-bold text-blue-600 lowercase">{detailsModal.email}</p>
                   </div>
                </div>
+<<<<<<< HEAD
+=======
+               
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
                <div className="grid grid-cols-2 gap-4">
                   <div className="p-4 bg-white border border-slate-100 rounded-2xl">
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Access Level</p>
@@ -245,6 +348,10 @@ export default function Students() {
                     <div className="flex items-center gap-2 text-slate-700 font-bold uppercase text-xs"><Calendar size={14} className="text-blue-500" /> {new Date(detailsModal.createdAt).toLocaleDateString()}</div>
                   </div>
                </div>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
                <button onClick={() => setDetailsModal(null)} className="w-full py-4 bg-slate-100 text-slate-600 rounded-2xl font-black hover:bg-slate-200 transition-all">
                   DISMISS
                </button>
@@ -254,4 +361,318 @@ export default function Students() {
       </AnimatePresence>
     </div>
   );
+<<<<<<< HEAD
 }
+=======
+}
+=======
+  // ✅ Fetch all students
+  const fetchStudents = () => {
+    setLoading(true);
+    axios
+      .get(`${BACK_URL}/api/admin/users`, {
+        headers: { "x-admin-token": ADMIN_TOKEN },
+      })
+      .then((res) => {
+        setStudents(res.data);
+        setLoading(false);
+      })
+      .catch(() => {
+        setError("Unable to fetch users.");
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    fetchStudents();
+  }, []);
+
+  // ✅ API Helpers
+  const addStudentAPI = (student) =>
+    axios
+      .post(
+        `${BACK_URL}/api/admin/users`,
+        { ...student, role: "student" },
+        { headers: { "x-admin-token": ADMIN_TOKEN } }
+      )
+      .then((res) => res.data)
+      .catch((err) => ({ error: err.response?.data?.message || err.message }));
+
+  const updateStudentAPI = (id, updates) =>
+    axios
+      .put(`${BACK_URL}/api/admin/users/${id}`, updates, {
+        headers: { "x-admin-token": ADMIN_TOKEN },
+      })
+      .then((res) => res.data)
+      .catch((err) => ({ error: err.response?.data?.message || err.message }));
+
+  const suspendStudentAPI = (id) =>
+    axios
+      .post(`${BACK_URL}/api/admin/users/${id}/suspend`, {}, {
+        headers: { "x-admin-token": ADMIN_TOKEN },
+      })
+      .then((res) => res.data)
+      .catch((err) => ({ error: err.response?.data?.message || err.message }));
+
+  const unsuspendStudentAPI = (id) =>
+    axios
+      .post(`${BACK_URL}/api/admin/users/${id}/unsuspend`, {}, {
+        headers: { "x-admin-token": ADMIN_TOKEN },
+      })
+      .then((res) => res.data)
+      .catch((err) => ({ error: err.response?.data?.message || err.message }));
+
+  const deleteStudentAPI = (id) =>
+    axios
+      .delete(`${BACK_URL}/api/admin/users/${id}`, {
+        headers: { "x-admin-token": ADMIN_TOKEN },
+      })
+      .then(() => ({ success: true }))
+      .catch((err) => ({ error: err.response?.data?.message || err.message }));
+
+  // ✅ Modal Handlers
+  const openAddModal = () => {
+    setName("");
+    setEmail("");
+    setEditingId(null);
+    setError("");
+    setModalVisible(true);
+  };
+
+  const openEditModal = (id) => {
+    const s = students.find((st) => st._id === id);
+    if (!s) return;
+    setName(s.name);
+    setEmail(s.email);
+    setEditingId(id);
+    setError("");
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+    setEditingId(null);
+    setName("");
+    setEmail("");
+    setError("");
+  };
+
+  // ✅ Save Student
+  const handleSave = () => {
+    if (!name.trim() || !email.trim()) {
+      setError("Name and Email are required");
+      return;
+    }
+
+    const action = editingId
+      ? updateStudentAPI(editingId, { name, email })
+      : addStudentAPI({ name, email });
+
+    action.then((data) => {
+      if (!data.error) {
+        fetchStudents();
+        closeModal();
+      } else {
+        setError(data.error);
+      }
+    });
+  };
+
+  // ✅ Suspend/Unsuspend
+  const toggleSuspend = (id, currentStatus) => {
+    const action =
+      currentStatus === "active"
+        ? suspendStudentAPI(id)
+        : unsuspendStudentAPI(id);
+
+    action.then((data) => {
+      if (!data.error) {
+        fetchStudents();
+      } else {
+        setError(data.error);
+      }
+    });
+  };
+
+  // ✅ Delete
+  const deleteStudent = (id) => {
+    deleteStudentAPI(id).then((data) => {
+      if (!data.error) {
+        fetchStudents();
+      } else {
+        setError(data.error);
+      }
+    });
+  };
+
+  return (
+    <div className="p-6">
+      <h1 className="text-3xl font-bold mb-6 text-gray-800 flex items-center gap-2">
+        <User className="w-7 h-7 text-blue-600" /> Students
+      </h1>
+
+      {error && (
+        <p className="text-red-500 mb-4 font-semibold text-sm">{error}</p>
+      )}
+
+      <button
+        onClick={openAddModal}
+        className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg mb-6 hover:bg-blue-700 transition"
+      >
+        <PlusCircle className="w-5 h-5" /> Add Student
+      </button>
+
+      {loading ? (
+        <p className="text-center text-gray-500">Loading students...</p>
+      ) : students.length === 0 ? (
+        <p className="text-gray-500 text-center">No students found</p>
+      ) : (
+        <div className="overflow-x-auto rounded-lg shadow border">
+          <table className="w-full text-sm">
+            <thead className="bg-gray-100 text-gray-700 text-left">
+              <tr>
+                <th className="p-3">Name</th>
+                <th className="p-3">Email</th>
+                <th className="p-3">Status</th>
+                <th className="p-3 text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {students.map((s) => {
+                const isSuspended =
+                  s.suspendUntil && new Date(s.suspendUntil) > new Date();
+                const status = isSuspended ? "suspended" : "active";
+                return (
+                  <tr
+                    key={s._id}
+                    className="border-t hover:bg-gray-50 transition"
+                  >
+                    <td className="p-3">{s.name}</td>
+                    <td className="p-3">{s.email}</td>
+                    <td className="p-3">
+                      <span
+                        className={`px-2 py-1 text-xs font-medium rounded ${
+                          status === "active"
+                            ? "bg-green-100 text-green-600"
+                            : "bg-yellow-100 text-yellow-600"
+                        }`}
+                      >
+                        {status}
+                      </span>
+                    </td>
+                    <td className="p-3 text-center flex flex-wrap gap-2 justify-center">
+                      <button
+                        onClick={() => setDetailsModal(s)}
+                        className="flex items-center gap-1 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition text-xs"
+                      >
+                        <Eye className="w-4 h-4" /> View
+                      </button>
+                      <button
+                        onClick={() => openEditModal(s._id)}
+                        className="flex items-center gap-1 bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition text-xs"
+                      >
+                        <Pencil className="w-4 h-4" /> Edit
+                      </button>
+                      <button
+                        onClick={() => toggleSuspend(s._id, status)}
+                        className={`flex items-center gap-1 text-white px-3 py-1 rounded transition text-xs ${
+                          status === "active"
+                            ? "bg-red-500 hover:bg-red-600"
+                            : "bg-green-500 hover:bg-green-600"
+                        }`}
+                      >
+                        {status === "active" ? (
+                          <>
+                            <PauseCircle className="w-4 h-4" /> Suspend
+                          </>
+                        ) : (
+                          <>
+                            <PlayCircle className="w-4 h-4" /> Activate
+                          </>
+                        )}
+                      </button>
+                      <button
+                        onClick={() => deleteStudent(s._id)}
+                        className="flex items-center gap-1 bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-600 transition text-xs"
+                      >
+                        <Trash2 className="w-4 h-4" /> Delete
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* ✅ Add/Edit Modal */}
+      {modalVisible && (
+        <Modal title={editingId ? "Edit Student" : "Add Student"} onClose={closeModal}>
+          <div className="space-y-4">
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Student name"
+              className="border p-2 rounded w-full focus:ring-2 focus:ring-blue-400 outline-none"
+            />
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Student email"
+              className="border p-2 rounded w-full focus:ring-2 focus:ring-blue-400 outline-none"
+            />
+            {error && (
+              <p className="text-red-500 text-sm">{error}</p>
+            )}
+            <button
+              onClick={handleSave}
+              className="bg-blue-600 text-white px-4 py-2 rounded w-full hover:bg-blue-700 transition"
+            >
+              {editingId ? "Save Changes" : "Add Student"}
+            </button>
+          </div>
+        </Modal>
+      )}
+
+      {/* ✅ View Details Modal */}
+      {detailsModal && (
+        <Modal title="Student Details" onClose={() => setDetailsModal(null)}>
+          <div className="space-y-3 text-sm text-gray-700">
+            <p className="flex items-center gap-2">
+              <User className="w-4 h-4 text-blue-600" />
+              <span className="font-semibold">Name:</span> {detailsModal.name}
+            </p>
+            <p className="flex items-center gap-2">
+              <Mail className="w-4 h-4 text-blue-600" />
+              <span className="font-semibold">Email:</span> {detailsModal.email}
+            </p>
+            <p className="flex items-center gap-2">
+              <Shield className="w-4 h-4 text-blue-600" />
+              <span className="font-semibold">Role:</span> {detailsModal.role}
+            </p>
+            <p className="flex items-center gap-2">
+              <Shield className="w-4 h-4 text-blue-600" />
+              <span className="font-semibold">Status:</span>{" "}
+              {detailsModal.suspendUntil &&
+              new Date(detailsModal.suspendUntil) > new Date()
+                ? "Suspended"
+                : "Active"}
+            </p>
+            <p className="flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-blue-600" />
+              <span className="font-semibold">Joined:</span>{" "}
+              {detailsModal.createdAt
+                ? new Date(detailsModal.createdAt).toLocaleString()
+                : "N/A"}
+            </p>
+          </div>
+        </Modal>
+      )}
+    </div>
+  );
+}
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949

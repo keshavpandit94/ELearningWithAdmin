@@ -6,6 +6,10 @@ export default function useEnroll({ token, user, courseId }) {
   const [loading, setLoading] = useState(false);
   const [isEnrolled, setIsEnrolled] = useState(false);
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
   // 1. Helper to check enrollment status
   const checkEnrollment = useCallback(async () => {
     // If no user/token, they definitely aren't enrolled
@@ -13,33 +17,79 @@ export default function useEnroll({ token, user, courseId }) {
       setIsEnrolled(false);
       return;
     }
+<<<<<<< HEAD
 
+=======
+    
+=======
+  // Helper to check enrollment status
+  const checkEnrollment = useCallback(async () => {
+    if (!token || !courseId) return;
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
     try {
       const res = await axios.get(`${BACKEND_URL}/api/enrollments/my-courses`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
       // Search courses that match current courseId with enrolled status
+<<<<<<< HEAD
       const enrolledCourse = (res.data || []).find(
         (entry) => (entry.course?._id === courseId || entry.course === courseId) && entry.status === "enrolled"
+=======
+<<<<<<< HEAD
+      const enrolledCourse = (res.data || []).find(
+=======
+      const enrolledCourse = res.data.find(
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
+        (entry) => entry.course?._id === courseId && entry.status === "enrolled"
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
       );
 
       setIsEnrolled(!!enrolledCourse);
     } catch (err) {
+<<<<<<< HEAD
       console.error("❌ Enrollment check failed:", err);
+=======
+<<<<<<< HEAD
+      console.error("❌ Enrollment check failed:", err);
+=======
+      console.error("Enrollment check failed:", err);
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
       setIsEnrolled(false);
     }
   }, [token, courseId]);
 
+<<<<<<< HEAD
   // Sync enrollment status on mount or when courseId changes
+=======
+<<<<<<< HEAD
+  // Sync enrollment status on mount or when courseId changes
+=======
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
   useEffect(() => {
     checkEnrollment();
   }, [checkEnrollment]);
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
   // 2. Primary Enrollment Function
   const enroll = async (course) => {
     if (!token) {
       alert("Please login to start your journey! 🎓");
+<<<<<<< HEAD
+=======
+=======
+  // Enrollment function
+  const enroll = async (course) => {
+    if (!token) {
+      alert("Please login to enroll.");
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
       return;
     }
 
@@ -49,20 +99,45 @@ export default function useEnroll({ token, user, courseId }) {
       const res = await axios.post(
         `${BACKEND_URL}/api/enrollments`,
         { courseId: course._id },
+<<<<<<< HEAD
         { headers: { Authorization: `Bearer ${token}` } }
+=======
+<<<<<<< HEAD
+        { headers: { Authorization: `Bearer ${token}` } }
+=======
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
       );
 
       const data = res.data;
 
+<<<<<<< HEAD
       // Logic for Free Courses
       if (data.message === "Enrolled successfully") {
         alert("✅ Successfully enrolled in this free course!");
         setIsEnrolled(true);
+=======
+<<<<<<< HEAD
+      // Logic for Free Courses
+      if (data.message === "Enrolled successfully") {
+        setIsEnrolled(true);
+=======
+      if (data.message === "Enrolled successfully") {
+        alert("✅ Enrolled in free course!");
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
         await checkEnrollment();
         setLoading(false);
         return;
       }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
       // Logic for Paid Courses (Razorpay)
       if (data.message === "Payment required") {
         const { orderId, price, currency, key } = data;
@@ -77,7 +152,11 @@ export default function useEnroll({ token, user, courseId }) {
 
         const options = {
           key,
+<<<<<<< HEAD
           amount: price * 100, // Razorpay works in paise
+=======
+          amount: price * 100, // Razorpay works in paise/cents
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
           currency,
           name: "ELRN Platform",
           description: `Unlocking: ${course.title}`,
@@ -86,10 +165,36 @@ export default function useEnroll({ token, user, courseId }) {
             name: user?.name || "",
             email: user?.email || "",
           },
+<<<<<<< HEAD
           theme: { color: "#2563eb" }, // Primary Blue
           handler: async (response) => {
             try {
               // Verify Payment on Backend
+=======
+          theme: { color: "#2563eb" }, // Your primary blue
+          handler: async (response) => {
+            try {
+              // Verify Payment on Backend
+=======
+      if (data.message === "Payment required") {
+        const { orderId, price, currency, key } = data;
+
+        const options = {
+          key,
+          amount: price * 100, // amount in paise
+          currency,
+          name: "E-Learning Platform",
+          description: `Payment for ${course.title}`,
+          order_id: orderId,
+          prefill: {
+            name: user?.name || "Student User",
+            email: user?.email || "student@example.com",
+          },
+          theme: { color: "#3399cc" },
+          handler: async (response) => {
+            try {
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
               const verifyRes = await axios.post(
                 `${BACKEND_URL}/api/enrollments/verify`,
                 {
@@ -98,10 +203,15 @@ export default function useEnroll({ token, user, courseId }) {
                   razorpay_signature: response.razorpay_signature,
                   courseId: course._id,
                 },
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
                 { headers: { Authorization: `Bearer ${token}` } }
               );
 
               if (verifyRes.data.message.includes("success")) {
+<<<<<<< HEAD
                 alert("✅ Payment successful! Welcome to the course.");
                 setIsEnrolled(true);
                 await checkEnrollment();
@@ -111,23 +221,99 @@ export default function useEnroll({ token, user, courseId }) {
             } catch (err) {
               console.error("❌ Verification error:", err);
               alert("❌ Payment verification failed.");
+=======
+                setIsEnrolled(true);
+                await checkEnrollment();
+              } else {
+                alert("Payment verification failed. Please contact support.");
+              }
+            } catch (err) {
+              console.error("Verification error:", err);
+=======
+                {
+                  headers: { Authorization: `Bearer ${token}` },
+                }
+              );
+
+              if (verifyRes.data.message.includes("success")) {
+                alert("✅ Payment successful, enrolled!");
+                await checkEnrollment();
+              } else {
+                alert("⚠️ Payment verification failed!");
+              }
+            } catch (err) {
+              alert("❌ Verification failed.");
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
             } finally {
               setLoading(false);
             }
           },
           modal: {
+<<<<<<< HEAD
             ondismiss: async () => {
               await handlePaymentFailure(orderId, course._id, token);
+=======
+<<<<<<< HEAD
+            ondismiss: () => {
+              handlePaymentFailure(orderId, course._id, token);
+=======
+            ondismiss: async () => {
+              alert("⚠️ Payment window closed, enrollment incomplete.");
+              try {
+                await axios.post(
+                  `${BACKEND_URL}/api/enrollments/payment-failed`,
+                  { orderId, courseId: course._id },
+                  { headers: { Authorization: `Bearer ${token}` } }
+                );
+              } catch (error) {
+                console.error("Failed updating payment state on dismissal:", error);
+              }
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
               setLoading(false);
             },
           },
         };
 
+<<<<<<< HEAD
         const rzp = new window.Razorpay(options);
         
         rzp.on("payment.failed", async () => {
           alert("⚠️ Payment failed or was cancelled.");
           await handlePaymentFailure(orderId, course._id, token);
+=======
+<<<<<<< HEAD
+        const rzp = new window.Razorpay(options);
+        
+        rzp.on("payment.failed", () => {
+          handlePaymentFailure(orderId, course._id, token);
+=======
+        // Load Razorpay script if not already loaded
+        if (!window.Razorpay) {
+          const loaded = await loadRazorpayScript();
+          if (!loaded) {
+            alert("Failed to load payment gateway. Try again later.");
+            setLoading(false);
+            return;
+          }
+        }
+
+        const rzp = new window.Razorpay(options);
+
+        rzp.on("payment.failed", async () => {
+          alert("⚠️ Payment failed or cancelled.");
+          try {
+            await axios.post(
+              `${BACKEND_URL}/api/enrollments/payment-failed`,
+              { orderId, courseId: course._id },
+              { headers: { Authorization: `Bearer ${token}` } }
+            );
+          } catch (error) {
+            console.error("Failed updating payment state on failure:", error);
+          }
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
           setLoading(false);
         });
 
@@ -135,7 +321,15 @@ export default function useEnroll({ token, user, courseId }) {
       }
     } catch (err) {
       console.error("Enrollment error:", err);
+<<<<<<< HEAD
       alert(err.response?.data?.message || "❌ Something went wrong during enrollment.");
+=======
+<<<<<<< HEAD
+      alert("Something went wrong. Please try again.");
+=======
+      alert("❌ Something went wrong during enrollment.");
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
       setLoading(false);
     }
   };
@@ -143,6 +337,10 @@ export default function useEnroll({ token, user, courseId }) {
   return { enroll, isEnrolled, loading, checkEnrollment };
 }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
 /**
  * UTILITIES
  */
@@ -161,6 +359,12 @@ async function handlePaymentFailure(orderId, courseId, token) {
 }
 
 // Load Razorpay JS SDK
+<<<<<<< HEAD
+=======
+=======
+// Utility to dynamically load Razorpay JS SDK
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
 function loadRazorpayScript() {
   return new Promise((resolve) => {
     if (window.Razorpay) {
@@ -173,4 +377,12 @@ function loadRazorpayScript() {
     script.onerror = () => resolve(false);
     document.body.appendChild(script);
   });
+<<<<<<< HEAD
 }
+=======
+<<<<<<< HEAD
+}
+=======
+}
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949

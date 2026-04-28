@@ -4,11 +4,22 @@
 
 body {
   @apply bg-gray-50 text-gray-900;
+<<<<<<< HEAD
 }
 html {
   scroll-padding-top: 100px, 
 }
 
+=======
+<<<<<<< HEAD
+}
+
+html {
+  scroll-padding-top: 100px; /* Adjusts scroll position for anchor links */
+}
+
+/* Custom scrollbar for that 2026 tech look */
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -21,4 +32,9 @@ html {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #3b82f6;
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
 }

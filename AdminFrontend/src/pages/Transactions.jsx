@@ -1,7 +1,14 @@
 import { useEffect, useState } from "react";
 import BACK_URL, { ADMIN_TOKEN } from "../api";
 import axios from "axios";
+<<<<<<< HEAD
 import { motion, AnimatePresence } from "framer-motion";
+=======
+<<<<<<< HEAD
+import { motion, AnimatePresence } from "framer-motion";
+=======
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
 import {
   Eye,
   RotateCcw,
@@ -15,6 +22,12 @@ import {
   CheckCircle,
   XCircle,
   Loader2,
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+  Search,
+  ArrowUpRight,
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
   ShieldCheck,
   ReceiptText
 } from "lucide-react";
@@ -36,9 +49,35 @@ function Modal({ title, children, onClose }) {
             <X size={20} />
           </button>
         </div>
+<<<<<<< HEAD
         <div className="p-8 max-h-[70vh] overflow-y-auto custom-scrollbar">{children}</div>
       </motion.div>
     </motion.div>
+=======
+        <div className="p-8">{children}</div>
+      </motion.div>
+    </motion.div>
+=======
+} from "lucide-react";
+
+// Modal component with close button
+function Modal({ title, children, onClose }) {
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
+      <div className="bg-white rounded-2xl p-6 w-full max-w-md relative shadow-lg max-h-[80vh] overflow-y-auto">
+        <button
+          onClick={onClose}
+          className="absolute top-3 right-3 text-gray-600 hover:text-gray-900"
+          aria-label="Close"
+        >
+          <X className="w-5 h-5" />
+        </button>
+        <h2 className="text-xl font-semibold mb-4">{title}</h2>
+        {children}
+      </div>
+    </div>
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
   );
 }
 
@@ -48,38 +87,91 @@ export default function Transactions() {
   const [error, setError] = useState("");
   const [detailsModal, setDetailsModal] = useState(null);
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
   useEffect(() => { fetchTransactions(); }, []);
 
   const fetchTransactions = async () => {
     setLoading(true);
+<<<<<<< HEAD
     setError("");
+=======
+=======
+  useEffect(() => {
+    fetchTransactions();
+  }, []);
+
+  const fetchTransactions = async () => {
+    setLoading(true);
+    setError("");
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
     try {
       const res = await axios.get(`${BACK_URL}/api/admin/payments`, {
         headers: { "x-admin-token": ADMIN_TOKEN },
       });
       setTransactions(res.data);
     } catch (err) {
+<<<<<<< HEAD
       setError("Unable to synchronize transaction records.");
+=======
+<<<<<<< HEAD
+      setError("Unable to synchronize transaction records.");
+=======
+      setError("Unable to fetch transactions.");
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
     }
     setLoading(false);
   };
 
   const refundTransaction = async (id) => {
+<<<<<<< HEAD
     if(!window.confirm("Authorize full refund for this transaction?")) return;
     setError("");
+=======
+<<<<<<< HEAD
+    if(!window.confirm("Authorize full refund for this transaction?")) return;
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
     try {
       await axios.post(`${BACK_URL}/api/admin/payments/${id}/refund`, {}, { 
         headers: { "x-admin-token": ADMIN_TOKEN } 
       });
+<<<<<<< HEAD
+=======
+=======
+    setError("");
+    try {
+      const res = await axios.post(
+        `${BACK_URL}/api/admin/payments/${id}/refund`,
+        {},
+        { headers: { "x-admin-token": ADMIN_TOKEN } }
+      );
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
       setTransactions((prev) =>
         prev.map((t) => (t._id === id ? { ...t, status: "refunded" } : t))
       );
     } catch (err) {
+<<<<<<< HEAD
       setError(err.response?.data?.message || "Refund authorization failed.");
+=======
+<<<<<<< HEAD
+      setError(err.response?.data?.message || "Refund authorization failed.");
+=======
+      setError(err.response?.data?.message || err.message);
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
     }
   };
 
   const getStatusBadge = (status) => {
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
     const s = status?.toLowerCase();
     if (s === "success") return "bg-emerald-50 text-emerald-600 border-emerald-100";
     if (s === "refunded") return "bg-purple-50 text-purple-600 border-purple-100";
@@ -122,8 +214,11 @@ export default function Transactions() {
             <tbody className="divide-y divide-slate-50">
               {loading ? (
                 <tr><td colSpan="5" className="p-20 text-center"><Loader2 className="animate-spin inline text-blue-600" /></td></tr>
+<<<<<<< HEAD
               ) : transactions.length === 0 ? (
                 <tr><td colSpan="5" className="text-center p-10 text-slate-400">No transactions found.</td></tr>
+=======
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
               ) : (
                 transactions.map((t, idx) => (
                   <motion.tr 
@@ -132,7 +227,11 @@ export default function Transactions() {
                   >
                     <td className="px-8 py-6">
                       <div className="flex items-center gap-3">
+<<<<<<< HEAD
                         <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 transition-colors">
+=======
+                        <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-white transition-colors">
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
                           <User size={18} />
                         </div>
                         <div className="flex flex-col">
@@ -153,7 +252,11 @@ export default function Transactions() {
                       </span>
                     </td>
                     <td className="px-8 py-6 text-slate-400 text-xs font-bold">
+<<<<<<< HEAD
                       {new Date(t.createdAt).toLocaleDateString()}
+=======
+                      {new Date(t.createdAt).toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' })}
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
                     </td>
                     <td className="px-8 py-6 text-right">
                       <div className="flex items-center gap-2">
@@ -189,11 +292,16 @@ export default function Transactions() {
                </div>
 
                <div className="bg-slate-50 rounded-3xl p-6 border border-slate-100 space-y-4">
+<<<<<<< HEAD
                   <div className="flex justify-between items-center text-sm">
+=======
+                  <div className="flex justify-between items-center">
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 bg-white rounded-lg shadow-sm flex items-center justify-center text-slate-400"><User size={14}/></div>
                       <span className="text-[11px] font-black text-slate-400 uppercase">Student</span>
                     </div>
+<<<<<<< HEAD
                     <span className="font-bold text-slate-900">{detailsModal.student?.name || "N/A"}</span>
                   </div>
                   
@@ -206,21 +314,39 @@ export default function Transactions() {
                   </div>
 
                   <div className="flex justify-between items-center text-sm">
+=======
+                    <span className="text-sm font-bold text-slate-900">{detailsModal.student?.name}</span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center">
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 bg-white rounded-lg shadow-sm flex items-center justify-center text-slate-400"><BookOpen size={14}/></div>
                       <span className="text-[11px] font-black text-slate-400 uppercase">Course</span>
                     </div>
+<<<<<<< HEAD
                     <span className="font-bold text-slate-900 max-w-[150px] truncate text-right">{detailsModal.course?.title || "N/A"}</span>
+=======
+                    <span className="text-sm font-bold text-slate-900 max-w-[150px] truncate">{detailsModal.course?.title}</span>
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
                   </div>
 
                   <div className="h-px bg-slate-200/50" />
 
+<<<<<<< HEAD
                   <div className="flex justify-between items-center text-sm">
+=======
+                  <div className="flex justify-between items-center">
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 bg-white rounded-lg shadow-sm flex items-center justify-center text-slate-400"><CreditCard size={14}/></div>
                       <span className="text-[11px] font-black text-slate-400 uppercase">Gateway ID</span>
                     </div>
+<<<<<<< HEAD
                     <span className="text-[10px] font-mono font-black text-blue-600">{detailsModal.paymentId || "N/A"}</span>
+=======
+                    <span className="text-[10px] font-mono font-black text-blue-600">{detailsModal.paymentId}</span>
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
                   </div>
                </div>
 
@@ -238,4 +364,149 @@ export default function Transactions() {
       </AnimatePresence>
     </div>
   );
+<<<<<<< HEAD
 }
+=======
+}
+=======
+    switch (status) {
+      case "success":
+        return (
+          <span className="flex items-center gap-1 bg-green-100 text-green-600 px-2 py-1 rounded text-xs font-medium">
+            <CheckCircle className="w-4 h-4" /> Success
+          </span>
+        );
+      case "refunded":
+        return (
+          <span className="flex items-center gap-1 bg-purple-100 text-purple-600 px-2 py-1 rounded text-xs font-medium">
+            <RotateCcw className="w-4 h-4" /> Refunded
+          </span>
+        );
+      case "failed":
+      case "cancel":
+        return (
+          <span className="flex items-center gap-1 bg-red-100 text-red-600 px-2 py-1 rounded text-xs font-medium">
+            <XCircle className="w-4 h-4" /> Failed/Cancelled
+          </span>
+        );
+      default:
+        return (
+          <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs font-medium">
+            {status}
+          </span>
+        );
+    }
+  };
+
+  return (
+    <div className="p-4 sm:p-6">
+      <h1 className="text-2xl font-bold mb-6">Transactions</h1>
+
+      {loading && (
+        <p className="flex items-center gap-2 text-gray-600">
+          <Loader2 className="w-5 h-5 animate-spin" /> Loading transactions...
+        </p>
+      )}
+      {error && <p className="text-red-500 mb-4">{error}</p>}
+
+      <div className="bg-white p-4 sm:p-6 rounded-xl shadow overflow-x-auto">
+        <table className="w-full min-w-[600px] border-collapse">
+          <thead>
+            <tr className="bg-gray-100 text-left text-sm sm:text-base">
+              <th className="p-3">Student</th>
+              <th className="p-3">Amount</th>
+              <th className="p-3">Status</th>
+              <th className="p-3">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {transactions.length === 0 && !loading && (
+              <tr>
+                <td colSpan="4" className="text-center p-4 text-gray-500">
+                  No transactions found
+                </td>
+              </tr>
+            )}
+            {transactions.map((t) => (
+              <tr
+                key={t._id}
+                className="border-b hover:bg-gray-50 text-sm sm:text-base"
+              >
+                <td className="p-3">{t.student?.name || "N/A"}</td>
+                <td className="p-3 flex items-center gap-1">
+                  <IndianRupee className="w-4 h-4" />
+                  {(t.amount ).toFixed(2)}
+                </td>
+                <td className="p-3">{getStatusBadge(t.status)}</td>
+                <td className="p-3 space-x-2">
+                  <button
+                    onClick={() => setDetailsModal(t)}
+                    className="inline-flex items-center gap-1 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 text-sm"
+                  >
+                    <Eye className="w-4 h-4" /> View
+                  </button>
+                  {t.status === "success" && (
+                    <button
+                      onClick={() => refundTransaction(t._id)}
+                      className="inline-flex items-center gap-1 bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 text-sm"
+                    >
+                      <RotateCcw className="w-4 h-4" /> Refund
+                    </button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Details Modal */}
+      {detailsModal && (
+        <Modal
+          title="Transaction Details"
+          onClose={() => setDetailsModal(null)}
+        >
+          <div className="space-y-3 text-sm">
+            <p className="flex items-center gap-2">
+              <User className="w-4 h-4 text-gray-600" />
+              <span className="font-semibold">Student:</span>{" "}
+              {detailsModal.student?.name || "N/A"}
+            </p>
+            <p className="flex items-center gap-2">
+              <Mail className="w-4 h-4 text-gray-600" />
+              <span className="font-semibold">Email:</span>{" "}
+              {detailsModal.student?.email || "N/A"}
+            </p>
+            <p className="flex items-center gap-2">
+              <BookOpen className="w-4 h-4 text-gray-600" />
+              <span className="font-semibold">Course:</span>{" "}
+              {detailsModal.course?.title || "N/A"}
+            </p>
+            <p className="flex items-center gap-2">
+              <CreditCard className="w-4 h-4 text-gray-600" />
+              <span className="font-semibold">Payment ID:</span>{" "}
+              {detailsModal.paymentId || "N/A"}
+            </p>
+            <p className="flex items-center gap-2">
+              <IndianRupee className="w-4 h-4 text-gray-600" />
+              <span className="font-semibold">Amount:</span> ₹
+              {(detailsModal.amount / 100).toFixed(2)}
+            </p>
+            <p className="flex items-center gap-2">
+              <CheckCircle className="w-4 h-4 text-gray-600" />
+              <span className="font-semibold">Status:</span>{" "}
+              {detailsModal.status}
+            </p>
+            <p className="flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-gray-600" />
+              <span className="font-semibold">Date:</span>{" "}
+              {new Date(detailsModal.createdAt).toLocaleString()}
+            </p>
+          </div>
+        </Modal>
+      )}
+    </div>
+  );
+}
+>>>>>>> 35975c69493032751758ba9568584d2f16146318
+>>>>>>> 16cb5ced5963fb7d62ed500a1e58d4124ecd8949
